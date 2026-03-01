@@ -6,38 +6,32 @@ const navLinks = [
   { label: { en: "Product", zh: "产品" }, href: "#product" },
   { label: { en: "Workflow", zh: "流程" }, href: "#workflow" },
   { label: { en: "Artists", zh: "合作案例" }, href: "#artists" },
-  { label: { en: "Resources", zh: "资源", }, href: "#resources" },
-];
-
-const stats = [
-  { label: { en: "Artists onboard", zh: "已接入艺人" }, value: "340+" },
-  { label: { en: "Avg. payout speed", zh: "平均分账用时" }, value: "< 12 hrs" },
-  { label: { en: "Fan wallets connected", zh: "连接粉丝钱包" }, value: "18k" },
+  { label: { en: "Resources", zh: "资源" }, href: "#resources" },
 ];
 
 const benefits = [
   {
-    eyebrow: { en: "Royalty brain", zh: "分账大脑" },
-    title: { en: "Program splits once", zh: "分账一次设定即可" },
+    eyebrow: { en: "Splits", zh: "分账" },
+    title: { en: "Visual composer", zh: " визу化分账" },
     body: {
-      en: "Composer, label, collaborator, DAO treasury—drag & drop nodes, lock percentages, publish with one signature.",
-      zh: "词曲、厂牌、制作人、DAO 金库——节点拖拽、锁定比例，一次签名即可上链。",
+      en: "Map collaborators once. Drag, lock percentages, and ship a share graph your team actually loves.",
+      zh: "拖拽节点即可一次性设置分账，清晰的份额图让团队一目了然。",
     },
   },
   {
-    eyebrow: { en: "Fan capital", zh: "粉丝资本" },
-    title: { en: "Launch member tokens", zh: "发行会员/歌曲代币" },
+    eyebrow: { en: "Campaigns", zh: "活动" },
+    title: { en: "Fan equity", zh: "粉丝权益" },
     body: {
-      en: "Offer tiered NFT passes or song shares with auto-vested benefits. Fans know exactly how they earn.",
-      zh: "分层 NFT 或歌曲份额自动解锁权益，粉丝清楚知道自己的收益逻辑。",
+      en: "Launch limited member passes or song shares so superfans co-own the next era.",
+      zh: "发行会员卡或歌曲份额，让粉丝共同持有下一次发行。",
     },
   },
   {
-    eyebrow: { en: "Compliance", zh: "合规" },
-    title: { en: "Audit-ready vault", zh: "随时审计的资料库" },
+    eyebrow: { en: "Trust", zh: "信任" },
+    title: { en: "Compliance-friendly", zh: "友好合规" },
     body: {
-      en: "Contracts, stems, licenses, KYC artifacts live in an encrypted ledger so deals survive any audit.",
-      zh: "合同、音频源文件、授权、KYC 文件统一加密存储，随时经得起审计。",
+      en: "Contracts, stems, and reports store in a tamper-proof vault. Auditors love receipts.",
+      zh: "合同、素材、报告统一存放在可审计的资料库，随时应对检查。",
     },
   },
 ];
@@ -45,26 +39,26 @@ const benefits = [
 const workflow = [
   {
     step: "01",
-    title: { en: "Ingest & verify", zh: "素材入库与校验" },
+    title: { en: "Upload & align", zh: "素材与团队" },
     body: {
-      en: "Upload masters, attribute collaborators, attach contracts. Our AI assistant flags gaps instantly.",
-      zh: "上传母带、标注合作者、附上合同，AI 助理即时提示缺失项。",
+      en: "Drop in your masters and invite collaborators. Our assistant highlights missing info instantly.",
+      zh: "上传母带、邀请合作者，AI 助理即时提示缺失信息。",
     },
   },
   {
     step: "02",
-    title: { en: "Model revenue lanes", zh: "模拟收入通道" },
+    title: { en: "Model revenue lanes", zh: "模拟收入" },
     body: {
-      en: "Link DSP feeds, merch, sync, touring. Simulate scenarios before you ever hit deploy.",
-      zh: "连接流媒体、周边、同步授权、巡演等收入，部署前即可模拟不同场景。",
+      en: "Plan streaming, merch, sync, and fan drops. Stress-test before you ever go live.",
+      zh: "在上链前即可模拟流媒体、周边、授权和粉丝发行。",
     },
   },
   {
     step: "03",
-    title: { en: "Go live", zh: "一键上线" },
+    title: { en: "Launch & share", zh: "上线与分发" },
     body: {
-      en: "One click publishes the contract + fan campaign. Dashboard shows cash flow, holders, and alerts in real time.",
-      zh: "一键发布合约与粉丝活动，仪表板实时呈现金流、持有人与提醒。",
+      en: "Ship smart contracts + campaign pages in one click. Monitor across wallets, fans, and payouts.",
+      zh: "一键发布合约与活动页，实时查看钱包、粉丝与分账情况。",
     },
   },
 ];
@@ -72,175 +66,149 @@ const workflow = [
 const testimonials = [
   {
     quote: {
-      en: "Indie Royalty shaved weeks off our release schedule. Splits, merch drops, and fan shares are finally in one timeline.",
-      zh: "Indie Royalty 让我们的发行计划提前数周完成，分账、周边和粉丝份额终于整合在一个时间轴。",
+      en: "Indie Royalty reintroduced joy to our release calendar—no more spreadsheets, just flow.",
+      zh: "Indie Royalty 让发行重新变得轻盈，我们彻底告别了表格。",
     },
-    name: "Lina Park",
-    role: { en: "Founder, Beacon Label", zh: "Beacon Label 创始人" },
+    name: "Mia Arroyo",
+    role: { en: "Founder, Solis Collective", zh: "Solis Collective 创始人" },
   },
   {
     quote: {
-      en: "We moved our entire Web3 membership here—transparency for fans, instant payouts for collaborators.",
-      zh: "我们把所有 Web3 会员都迁到这里，粉丝透明、合作者即时分账。",
+      en: "Before fans invest, they see the exact tree of collaborators. That transparency sold us.",
+      zh: "粉丝投资前就能看清份额树，这份透明让我们毫不犹豫。",
     },
-    name: "Marcus Reed",
-    role: { en: "Artist & Creative Director", zh: "艺术家 & 创意总监" },
+    name: "Gavin Luo",
+    role: { en: "Producer & Label Partner", zh: "制作人/厂牌合伙人" },
   },
 ];
+
+const accentText = {
+  en: "Launching Summer 2026",
+  zh: "2026 夏发布",
+};
 
 export default function Home() {
   const [lang, setLang] = useState<"en" | "zh">("en");
   const t = (en: string, zh: string) => (lang === "en" ? en : zh);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#03050a] text-slate-100">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-x-0 -top-48 h-96 bg-gradient-to-br from-teal-500/40 via-purple-500/30 to-transparent blur-3xl" />
-        <div className="absolute bottom-0 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-teal-400/40 blur-[120px]" />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-6xl px-6 py-8 sm:px-10">
-        <header className="flex flex-wrap items-center gap-4 border border-white/10 bg-white/5 px-5 py-3 backdrop-blur-md sm:rounded-full">
-          <span className="text-base font-semibold tracking-[0.25em] text-teal-300">INDIE ROYALTY</span>
-          <nav className="flex flex-1 flex-wrap items-center justify-end gap-4 text-sm text-slate-200">
+    <div className="bg-gradient-to-b from-[#fdfcfb] to-[#f7f8ff] text-slate-900">
+      <div className="mx-auto max-w-6xl px-6 py-8 sm:px-10">
+        <header className="flex flex-wrap items-center gap-4 rounded-2xl border border-white/60 bg-white/80 px-6 py-4 shadow-lg backdrop-blur">
+          <span className="text-base font-semibold tracking-[0.3em] text-slate-700">INDIE ROYALTY</span>
+          <nav className="flex flex-1 flex-wrap items-center justify-end gap-4 text-sm text-slate-500">
             {navLinks.map((link) => (
-              <a key={link.href} href={link.href} className="transition hover:text-white">
+              <a key={link.href} href={link.href} className="transition hover:text-slate-900">
                 {t(link.label.en, link.label.zh)}
               </a>
             ))}
           </nav>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setLang(lang === "en" ? "zh" : "en")}
-              className="rounded-full border border-white/30 px-4 py-2 text-xs font-semibold text-white transition hover:border-white"
-            >
-              {lang === "en" ? "中文" : "EN"}
-            </button>
-            <a
-              href="mailto:team@indie-royalty.com"
-              className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition hover:brightness-90"
-            >
-              {t("Talk to us", "联系我们")}
-            </a>
-          </div>
+          <button
+            onClick={() => setLang(lang === "en" ? "zh" : "en")}
+            className="rounded-full border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-700 transition hover:border-slate-400"
+          >
+            {lang === "en" ? "中文" : "EN"}
+          </button>
+          <a
+            href="mailto:team@indie-royalty.com"
+            className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:brightness-95"
+          >
+            {t("Book Intro", "预约介绍")}
+          </a>
         </header>
 
-        <main className="mt-16 space-y-24">
-          <section id="hero" className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
-            <div>
-              <p className="text-sm uppercase tracking-[0.4em] text-teal-300">
-                {t("Web3 splits • fan equity • compliance", "Web3 分账 • 粉丝权益 • 合规")}
-              </p>
-              <h1 className="mt-4 text-4xl font-semibold leading-tight text-white md:text-5xl">
-                {t(
-                  "A creative operating system for indie labels, collectives, and self-managed artists.",
-                  "服务独立厂牌、社群与自我管理艺人的创意操作系统。"
-                )}
+        <main className="mt-16 space-y-20">
+          <section className="grid gap-12 rounded-[40px] bg-white/80 p-10 shadow-xl backdrop-blur lg:grid-cols-2">
+            <div className="space-y-6">
+              <p className="text-sm uppercase tracking-[0.4em] text-slate-400">{t("Music OS", "音乐操作系统")}</p>
+              <h1 className="text-4xl font-semibold leading-tight text-slate-900 md:text-5xl">
+                {t("Run every indie release, split, and fan drop from one calm space.", "在同一个宁静空间，完成独立发行、分账与粉丝活动。")}
               </h1>
-              <p className="mt-6 text-lg text-slate-300">
+              <p className="text-lg text-slate-500">
                 {t(
-                  "Wire revenue to the right wallets, model fan campaigns, sync contracts, and give your supporters the data room they deserve. All without spreadsheets.",
-                  "将收入精准分配到每个钱包，构建粉丝众筹、同步合同，给支持者一个透明的数据室——彻底告别表格。"
+                  "Plug your collaborators, partners, and superfans into a transparent experience—all without spreadsheets.",
+                  "一键拉入合作者、伙伴和核心粉丝，用清爽、透明的体验代替繁琐表格。"
                 )}
               </p>
-              <div className="mt-8 flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-4">
                 <a
                   href="https://forms.gle/fan-waitlist"
-                  className="rounded-full bg-teal-400 px-6 py-3 font-semibold text-slate-900 transition hover:bg-teal-300"
+                  className="rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:brightness-95"
                 >
-                  {t("Launch a cohort", "发起发行")}
+                  {t("Join waitlist", "加入候补")}
                 </a>
                 <a
-                  href="https://github.com/katherinezyj116-creator/indie-royalty."
-                  className="rounded-full border border-white/30 px-6 py-3 font-semibold text-white transition hover:border-white"
+                  href="mailto:team@indie-royalty.com"
+                  className="rounded-full border border-slate-200 px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400"
                 >
-                  {t("Browse playbook", "查看指南")}
+                  {t("Request a deck", "索取资料")}
                 </a>
               </div>
             </div>
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur">
-              <div className="space-y-6">
-                {stats.map((stat) => (
-                  <div key={stat.label.en} className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                    <div className="text-sm uppercase tracking-[0.3em] text-slate-400">
-                      {t(stat.label.en, stat.label.zh)}
-                    </div>
-                    <div className="mt-2 text-3xl font-semibold text-white">{stat.value}</div>
-                  </div>
-                ))}
+            <div className="rounded-3xl border border-white/80 bg-white p-6 shadow-inner">
+              <div className="space-y-4 text-sm text-slate-500">
+                <div className="rounded-2xl bg-slate-50 p-4 shadow-sm">
+                  <p className="text-xs uppercase tracking-[0.4em] text-slate-400">{t("Coming soon", "即将上线")}</p>
+                  <p className="mt-2 text-2xl font-semibold text-slate-900">{t(accentText.en, accentText.zh)}</p>
+                </div>
+                <div className="rounded-2xl bg-gradient-to-tr from-[#fcefe3] via-[#f7fbf0] to-[#eef4ff] p-4 shadow-sm">
+                  <p className="text-xs uppercase tracking-[0.4em] text-slate-400">{t("Fan areas", "粉丝专区")}</p>
+                  <p className="mt-2 text-lg font-semibold text-slate-900">
+                    {t("Members view splits, perks, and campaigns without spreadsheets.", "粉丝专区清晰呈现分账、权益和活动，再也不用表格。")}
+                  </p>
+                </div>
               </div>
             </div>
           </section>
 
-          <section id="product" className="space-y-8">
-            <div className="flex flex-col gap-3">
-              <p className="text-sm uppercase tracking-[0.4em] text-teal-300">{t("Product lens", "产品亮点")}</p>
-              <h2 className="text-3xl font-semibold text-white">
-                {t(
-                  "Orchestrate royalties, launches, and fans in one canvas.",
-                  "在同一画布协调分账、发行与粉丝。"
-                )}
+          <section id="product" className="space-y-6">
+            <div className="text-center">
+              <p className="text-sm uppercase tracking-[0.4em] text-slate-400">{t("Why Indie Royalty", "为什么选择 IR")}</p>
+              <h2 className="mt-3 text-3xl font-semibold text-slate-900">
+                {t("Three calm pillars for indie revenue.", "三大轻盈支柱守护独立音乐收入。")}
               </h2>
             </div>
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className="grid gap-6 lg:grid-cols-3">
               {benefits.map((item) => (
-                <article key={item.title.en} className="rounded-3xl border border白/10 bg-gradient-to-b from-white/10 to-white/5 p-6">
-                  <p className="text-xs uppercase tracking-[0.3em] text-teal-200">
-                    {t(item.eyebrow.en, item.eyebrow.zh)}
-                  </p>
-                  <h3 className="mt-3 text-xl font-semibold text-white">{t(item.title.en, item.title.zh)}</h3>
-                  <p className="mt-2 text-sm text-slate-300">{t(item.body.en, item.body.zh)}</p>
+                <article key={item.title.en} className="rounded-[30px] border border-slate-100 bg-white p-6 shadow-md">
+                  <p className="text-xs uppercase tracking-[0.3em] text-slate-400">{t(item.eyebrow.en, item.eyebrow.zh)}</p>
+                  <h3 className="mt-2 text-xl font-semibold text-slate-900">{t(item.title.en, item.title.zh)}</h3>
+                  <p className="mt-2 text-sm text-slate-500">{t(item.body.en, item.body.zh)}</p>
                 </article>
               ))}
             </div>
           </section>
 
-          <section id="workflow" className="grid gap-8 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-6 text-center">
-              <div className="mx-auto mb-6 h-52 w-52 rounded-full bg-gradient-to-br from-teal-400/40 to-purple-500/20"></div>
-              <p className="text-sm uppercase tracking-[0.4em] text-teal-300">{t("Live dashboard", "实时看板")}</p>
-              <h3 className="mt-3 text-2xl font-semibold text-white">
-                {t(
-                  "Every stream, merch drop, and fan token visible in real time.",
-                  "每一笔流媒体、周边、粉丝代币都实时可见。"
-                )}
-              </h3>
-              <p className="mt-3 text-sm text-slate-300">
-                {t(
-                  "Drill into wallet activity, contract status, and supporter cohorts without leaving this board.",
-                  "无需切换页面，就能深入查看钱包动态、合约状态与粉丝群体。"
-                )}
-              </p>
+          <section id="workflow" className="rounded-[40px] border border-white/70 bg-white/80 p-10 shadow-xl">
+            <div className="flex flex-col gap-6 text-center">
+              <p className="text-sm uppercase tracking-[0.4em] text-slate-400">{t("Workflow", "流程")}</p>
+              <h2 className="text-3xl font-semibold text-slate-900">
+                {t("From drafts to fans in three clear steps.", "三步让创作走向粉丝。")}
+              </h2>
             </div>
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
-              <p className="text-sm uppercase tracking-[0.4em] text-teal-300">{t("Workflow", "工作流程")}</p>
-              <div className="mt-6 space-y-6">
-                {workflow.map((stage) => (
-                  <div key={stage.step} className="rounded-2xl border border-white/10 bg-black/20 p-5">
-                    <span className="text-xs uppercase tracking-[0.4em] text-slate-400">{stage.step}</span>
-                    <h4 className="mt-2 text-lg font-semibold text-white">{t(stage.title.en, stage.title.zh)}</h4>
-                    <p className="mt-1 text-sm text-slate-300">{t(stage.body.en, stage.body.zh)}</p>
-                  </div>
-                ))}
-              </div>
+            <div className="mt-10 grid gap-6 lg:grid-cols-3">
+              {workflow.map((stage) => (
+                <div key={stage.step} className="rounded-3xl border border-slate-100 bg-slate-50/70 p-6 shadow-sm">
+                  <span className="text-xs uppercase tracking-[0.4em] text-slate-400">{stage.step}</span>
+                  <h3 className="mt-2 text-lg font-semibold text-slate-900">{t(stage.title.en, stage.title.zh)}</h3>
+                  <p className="mt-1 text-sm text-slate-500">{t(stage.body.en, stage.body.zh)}</p>
+                </div>
+              ))}
             </div>
           </section>
 
-          <section id="artists" className="space-y-8">
-            <div className="flex flex-col gap-3">
-              <p className="text-sm uppercase tracking-[0.4em] text-teal-300">{t("Loved by collectives", "深受社群喜爱")}</p>
-              <h2 className="text-3xl font-semibold text-white">
-                {t(
-                  "Artists and labels run their entire release calendar here.",
-                  "艺人和厂牌把整年的发行都搬到这里。"
-                )}
+          <section id="artists" className="space-y-6">
+            <div className="text-center">
+              <p className="text-sm uppercase tracking-[0.4em] text-slate-400">{t("Notes from the field", "现场反馈")}</p>
+              <h2 className="mt-3 text-3xl font-semibold text-slate-900">
+                {t("The brightest indie minds are already here.", "优秀独立音乐人已在此安家。")}
               </h2>
             </div>
             <div className="grid gap-6 md:grid-cols-2">
               {testimonials.map((item) => (
-                <figure key={item.name} className="rounded-3xl border border-white/10 bg白/5 p-6 text-sm text-slate-300">
-                  <p className="text-base text-white">“{t(item.quote.en, item.quote.zh)}”</p>
-                  <figcaption className="mt-4 text-xs uppercase tracking-[0.4em] text-teal-200">
+                <figure key={item.name} className="rounded-[30px] border border-slate-100 bg-white/90 p-6 shadow-md">
+                  <p className="text-base text-slate-700">“{t(item.quote.en, item.quote.zh)}”</p>
+                  <figcaption className="mt-4 text-xs uppercase tracking-[0.35em] text-slate-400">
                     {item.name} — {t(item.role.en, item.role.zh)}
                   </figcaption>
                 </figure>
@@ -248,36 +216,33 @@ export default function Home() {
             </div>
           </section>
 
-          <section id="resources" className="rounded-3xl border border-white/10 bg-gradient-to-r from-teal-500/10 to-purple-500/10 p-8 text-center">
-            <p className="text-sm uppercase tracking-[0.4em] text-teal-200">{t("Start building", "立即开启")}</p>
-            <h3 className="mt-4 text-3xl font-semibold text-white">
-              {t("Ready to let fans co-own your next release?", "准备好让粉丝共创下一次发行了吗？")}
+          <section id="resources" className="rounded-[40px] border border-white/70 bg-gradient-to-b from-[#fef7ef] via-[#f6fbff] to-[#fefefe] p-10 text-center shadow-xl">
+            <p className="text-sm uppercase tracking-[0.4em] text-slate-400">{t("Join the circle", "加入音乐圈")}</p>
+            <h3 className="mt-3 text-3xl font-semibold text-slate-900">
+              {t("Sign up for launch updates and early membership.", "订阅产品进度并抢先体验会员。")}
             </h3>
-            <p className="mt-3 text-base text-slate-200">
-              {t(
-                "Join the waitlist for campaign support, legal templates, and launch capital from our curator network.",
-                "加入候补名单，获取活动支持、法律模板与策展人网络带来的启动资金。"
-              )}
+            <p className="mt-3 text-base text-slate-600">
+              {t("We’ll send mini case studies, templates, and invites to our studio sessions.", "我们会分享案例、小模板，并邀请你参加 Studio Sessions。")}
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
               <a
                 href="https://forms.gle/fan-waitlist"
-                className="rounded-full bg-white px-6 py-3 font-semibold text-slate-900 transition hover:brightness-90"
+                className="rounded-full bg-slate-900 px-6 py-3 font-semibold text-white transition hover:brightness-95"
               >
-                {t("Join waitlist", "加入候补")}
+                {t("Join newsletter", "订阅简报")}
               </a>
               <a
                 href="mailto:team@indie-royalty.com"
-                className="rounded-full border border-white/40 px-6 py-3 font-semibold textwhite transition hover:border-white"
+                className="rounded-full border border-slate-200 px-6 py-3 font-semibold text-slate-700 transition hover:border-slate-400"
               >
-                {t("Book studio demo", "预约演示")}
+                {t("Book workshop", "预约工作坊")}
               </a>
             </div>
           </section>
         </main>
 
-        <footer className="mt-16 flex flex-col items-center gap-2 border-t border-white/10 py-6 text-xs uppercase tracking-[0.3em] text-slate-500">
-          <span>© {new Date().getFullYear()} Indie Royalty</span>
+        <footer className="mt-16 flex flex-col items-center gap-2 border-t border-slate-100 py-6 text-xs uppercase tracking-[0.3em] text-slate-400">
+          <span>© {new Date().getFullYear()} Indie Royauty</span>
           <span>{t("Web3 revenue OS for indie music", "独立音乐的 Web3 收入操作系统")}</span>
         </footer>
       </div>
