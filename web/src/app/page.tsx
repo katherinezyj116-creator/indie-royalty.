@@ -277,7 +277,7 @@ export default function Home() {
         </main>
 
         <footer className="mt-16 flex flex-col items-center gap-2 border-t border-white/10 py-6 text-xs uppercase tracking-[0.3em] text-slate-500">
-          <span>© {new Date().getFull休} Indie Royalty</span>
+          <span>© {new Date().getFullYear()} Indie Royalty</span>
           <span>{t("Web3 revenue OS for indie music", "独立音乐的 Web3 收入操作系统")}</span>
         </footer>
       </div>
