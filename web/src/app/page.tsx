@@ -5,6 +5,7 @@ import { useState } from "react";
 const navLinks = [
   { label: { en: "Product", zh: "产品" }, href: "#product" },
   { label: { en: "Workflow", zh: "流程" }, href: "#workflow" },
+  { label: { en: "Preview", zh: "互动预览" }, href: "#alpha" },
   { label: { en: "Artists", zh: "合作案例" }, href: "#artists" },
   { label: { en: "Resources", zh: "资源" }, href: "#resources" },
 ];
@@ -63,6 +64,75 @@ const workflow = [
   },
 ];
 
+const splitDemoStages = [
+  {
+    title: { en: "Draft the split", zh: "起草分账" },
+    body: {
+      en: "Invite vocalists, producers, writers, or labels. Everyone signs the same tree you designed—no PDF ping-pong.",
+      zh: "邀请主唱、制作人、词作者或厂牌，共享同一份份额树，再也不用邮件丢 PDF。",
+    },
+    checklist: {
+      en: ["Set primary roles", "Lock percentages", "Collect wallet or banking prefs"],
+      zh: ["定义参与角色", "锁定份额比例", "收集钱包或银行卡偏好"],
+    },
+  },
+  {
+    title: { en: "Simulate revenue", zh: "模拟收入" },
+    body: {
+      en: "Toggle on streaming, sync, merch, or fan equity. See how a $20K release travels before launch.",
+      zh: "切换流媒体、授权、周边或粉丝股权，提前看到 2 万美金如何被分发。",
+    },
+    checklist: {
+      en: ["Upload revenue assumptions", "Stress-test payouts", "Share preview with partners"],
+      zh: ["录入收入假设", "预览付款压力", "与合作伙伴共享预览"],
+    },
+  },
+  {
+    title: { en: "Publish receipts", zh: "发布凭证" },
+    body: {
+      en: "Each collaborator receives an on-chain receipt + fan-facing card so everyone trusts the flow.",
+      zh: "每位成员都会拿到链上凭证与粉丝可见卡片，透明度即刻上线。",
+    },
+    checklist: {
+      en: ["Mint receipt NFTs", "Confirm payout rail", "Drop link to fans"],
+      zh: ["铸造凭证 NFT", "确认支付通道", "向粉丝发布链接"],
+    },
+  },
+];
+
+const demoCollaborators = [
+  {
+    name: "Aura",
+    role: { en: "Lead artist", zh: "主唱" },
+    percent: 40,
+    color: "bg-slate-900",
+  },
+  {
+    name: "Nova Ties",
+    role: { en: "Producer duo", zh: "制作人组合" },
+    percent: 25,
+    color: "bg-indigo-500",
+  },
+  {
+    name: "Gavin Luo",
+    role: { en: "Writer", zh: "词作者" },
+    percent: 15,
+    color: "bg-amber-500",
+  },
+  {
+    name: "Fan Pool",
+    role: { en: "Superfan equity", zh: "粉丝权益" },
+    percent: 12,
+    color: "bg-emerald-500",
+  },
+  {
+    name: "Ops Fund",
+    role: { en: "Team services", zh: "团队服务" },
+    percent: 8,
+    color: "bg-rose-400",
+  },
+];
+
 const testimonials = [
   {
     quote: {
@@ -82,14 +152,11 @@ const testimonials = [
   },
 ];
 
-const accentText = {
-  en: "Launching Summer 2026",
-  zh: "2026 夏发布",
-};
-
 export default function Home() {
   const [lang, setLang] = useState<"en" | "zh">("en");
+  const [activeStage, setActiveStage] = useState(0);
   const t = (en: string, zh: string) => (lang === "en" ? en : zh);
+  const activeDemo = splitDemoStages[activeStage];
 
   return (
     <div className="bg-gradient-to-b from-[#fdfcfb] to-[#f7f8ff] text-slate-900">
@@ -148,8 +215,16 @@ export default function Home() {
             <div className="rounded-3xl border border-white/80 bg-white p-6 shadow-inner">
               <div className="space-y-4 text-sm text-slate-500">
                 <div className="rounded-2xl bg-slate-50 p-4 shadow-sm">
-                  <p className="text-xs uppercase tracking-[0.4em] text-slate-400">{t("Coming soon", "即将上线")}</p>
-                  <p className="mt-2 text-2xl font-semibold text-slate-900">{t(accentText.en, accentText.zh)}</p>
+                  <p className="text-xs uppercase tracking-[0.4em] text-slate-400">{t("Alpha preview", "内测预览")}</p>
+                  <p className="mt-2 text-lg font-semibold text-slate-900">
+                    {t("Step through the interactive split workflow and save your spot.", "几分钟体验互动分账流程，并锁定席位。")}
+                  </p>
+                  <a
+                    href="#alpha"
+                    className="mt-3 inline-flex items-center text-sm font-semibold text-slate-900 underline-offset-4 hover:underline"
+                  >
+                    {t("Explore preview", "前往体验")}
+                  </a>
                 </div>
                 <div className="rounded-2xl bg-gradient-to-tr from-[#fcefe3] via-[#f7fbf0] to-[#eef4ff] p-4 shadow-sm">
                   <p className="text-xs uppercase tracking-[0.4em] text-slate-400">{t("Fan areas", "粉丝专区")}</p>
@@ -194,6 +269,176 @@ export default function Home() {
                   <p className="mt-1 text-sm text-slate-500">{t(stage.body.en, stage.body.zh)}</p>
                 </div>
               ))}
+            </div>
+          </section>
+
+          <section id="alpha" className="rounded-[40px] border border-white/70 bg-gradient-to-br from-[#fdf7ff] via-[#f1fbff] to-[#fffcef] p-10 shadow-xl">
+            <div className="flex flex-col gap-4 text-center">
+              <p className="text-sm uppercase tracking-[0.4em] text-slate-400">{t("Interactive preview", "互动预览")}</p>
+              <h2 className="text-3xl font-semibold text-slate-900">
+                {t("Test the split flow, then claim your alpha seat.", "先体验分账流程，再锁定内测席位。")}
+              </h2>
+              <p className="text-base text-slate-600">
+                {t(
+                  "Walk through the exact dashboard artists will use, then tell us how you run payouts today.",
+                  "逐步体验未来的分账面板，并告诉我们你现在如何付款。"
+                )}
+              </p>
+            </div>
+            <div className="mt-10 grid gap-10 lg:grid-cols-2">
+              <div className="space-y-6">
+                <div className="grid gap-3">
+                  {splitDemoStages.map((stage, index) => (
+                    <button
+                      key={stage.title.en}
+                      onClick={() => setActiveStage(index)}
+                      className={`rounded-3xl border px-5 py-4 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/30 ${
+                        activeStage === index
+                          ? "border-slate-900 bg-slate-900 text-white shadow-lg"
+                          : "border-white/60 bg-white/80 text-slate-700 shadow"
+                      }`}
+                    >
+                      <p className="text-xs uppercase tracking-[0.4em]">
+                        {t(`Step ${index + 1}`, `步骤 ${index + 1}`)}
+                      </p>
+                      <p className="mt-2 text-xl font-semibold">
+                        {t(stage.title.en, stage.title.zh)}
+                      </p>
+                      <p className="mt-1 text-sm">
+                        {t(stage.body.en, stage.body.zh)}
+                      </p>
+                    </button>
+                  ))}
+                </div>
+                <div className="rounded-[32px] border border-white/70 bg-white/90 p-6 shadow-lg">
+                  <p className="text-xs uppercase tracking-[0.35em] text-slate-400">
+                    {t("Checklist", "操作清单")}
+                  </p>
+                  <ul className="mt-4 space-y-2 text-sm text-slate-600">
+                    {activeDemo.checklist[lang].map((item) => (
+                      <li key={item} className="flex items-start gap-2">
+                        <span className="mt-1 inline-block h-2 w-2 rounded-full bg-slate-900" aria-hidden />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-6 space-y-3">
+                    {demoCollaborators.map((collab) => (
+                      <div key={collab.name}>
+                        <div className="flex items-baseline justify-between text-xs uppercase tracking-[0.3em] text-slate-400">
+                          <span>{collab.name}</span>
+                          <span>{collab.percent}%</span>
+                        </div>
+                        <div className="mt-2 h-2 rounded-full bg-slate-100">
+                          <span
+                            className={`block h-full rounded-full ${collab.color}`}
+                            style={{ width: `${collab.percent}%` }}
+                          />
+                        </div>
+                        <p className="mt-1 text-xs text-slate-500">{t(collab.role.en, collab.role.zh)}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-[32px] border border-white/70 bg-white/95 p-6 shadow-lg">
+                <p className="text-xs uppercase tracking-[0.35em] text-slate-400">
+                  {t("Alpha intake", "内测报名")}
+                </p>
+                <h3 className="mt-2 text-2xl font-semibold text-slate-900">
+                  {t("Tell us how you split now.", "告诉我们你现在如何分账。")}
+                </h3>
+                <p className="mt-2 text-sm text-slate-600">
+                  {t(
+                    "We review every submission weekly and invite teams that need transparent payouts the most.",
+                    "我们每周筛选报名，优先邀请最需要透明分账的团队。"
+                  )}
+                </p>
+                <form
+                  className="mt-6 space-y-4"
+                  method="POST"
+                  action="https://formspree.io/f/mnqkagbl"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <div>
+                    <label className="text-xs uppercase tracking-[0.3em] text-slate-500">
+                      {t("Name", "姓名")}
+                    </label>
+                    <input
+                      required
+                      name="name"
+                      type="text"
+                      placeholder={t("Aura Li", "李清扬")}
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs uppercase tracking-[0.3em] text-slate-500">
+                      {t("Email", "邮箱")}
+                    </label>
+                    <input
+                      required
+                      name="email"
+                      type="email"
+                      placeholder="team@label.com"
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs uppercase tracking-[0.3em] text-slate-500">
+                      {t("Role", "身份")}
+                    </label>
+                    <select
+                      name="role"
+                      required
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
+                    >
+                      <option value="artist">{t("Artist / Band", "音乐人 / 乐队")}</option>
+                      <option value="producer">{t("Producer / Writer", "制作人 / 词曲")}</option>
+                      <option value="manager">{t("Manager / Label", "经纪 / 厂牌")}</option>
+                      <option value="ops">{t("Ops / Finance", "运营 / 财务")}</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-xs uppercase tracking-[0.3em] text-slate-500">
+                      {t("Annual indie revenue", "独立业务年收入")}
+                    </label>
+                    <select
+                      name="revenue_range"
+                      required
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
+                    >
+                      <option value="<10k">&lt;$10K</option>
+                      <option value="10-50k">$10K–$50K</option>
+                      <option value="50-200k">$50K–$200K</option>
+                      <option value=">200k">$200K+</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-xs uppercase tracking-[0.3em] text-slate-500">
+                      {t("How do you pay now?", "现在如何结算？")}
+                    </label>
+                    <textarea
+                      name="current_process"
+                      rows={3}
+                      placeholder={t("Google Sheets + wire transfers", "表格 + 转账")}
+                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
+                    />
+                  </div>
+                  <input type="hidden" name="language" value={lang} />
+                  <button
+                    type="submit"
+                    className="w-full rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:brightness-95"
+                  >
+                    {t("Submit + reserve", "提交并保留席位")}
+                  </button>
+                  <p className="text-center text-xs text-slate-500">
+                    {t("Prefer email? Write us at team@indie-royalty.com", "如果想通过邮件沟通，请写信至 team@indie-royalty.com")}
+                  </p>
+                </form>
+              </div>
             </div>
           </section>
 
@@ -242,7 +487,7 @@ export default function Home() {
         </main>
 
         <footer className="mt-16 flex flex-col items-center gap-2 border-t border-slate-100 py-6 text-xs uppercase tracking-[0.3em] text-slate-400">
-          <span>© {new Date().getFullYear()} Indie Royauty</span>
+          <span>© {new Date().getFullYear()} Indie Royalty</span>
           <span>{t("Web3 revenue OS for indie music", "独立音乐的 Web3 收入操作系统")}</span>
         </footer>
       </div>
