@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { FormEvent, useState } from "react";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
 
 const navLinks = [
   { label: { en: "Product", zh: "产品" }, href: "#product" },
@@ -151,6 +153,416 @@ const testimonials = [
     role: { en: "Producer & Label Partner", zh: "制作人/厂牌合伙人" },
   },
 ];
+
+
+
+type Collaborator = {
+  id: string;
+  name: string;
+  role: string;
+  email: string;
+  payout: string;
+  percent: number;
+};
+
+const createCollaborator = (): Collaborator => ({
+  id:
+    typeof crypto !== "undefined" && crypto.randomUUID
+      ? crypto.randomUUID()
+      : Math.random().toString(36).slice(2),
+  name: "",
+  role: "",
+  email: "",
+  payout: "",
+  percent: 0,
+});
+
+function WalletSplitCard({ lang }: { lang: "en" | "zh" }) {
+  const t = (en: string, zh: string) => (lang === "en" ? en : zh);
+  const { isConnected, address } = useAccount();
+  const [projectName, setProjectName] = useState("");
+  const [overview, setOverview] = useState("");
+  const [collaborators, setCollaborators] = useState<Collaborator[]>([
+    createCollaborator(),
+  ]);
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">(
+    "idle"
+  );
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [txLink, setTxLink] = useState<string | null>(null);
+  const [receiptLink, setReceiptLink] = useState<string | null>(null);
+
+  const totalPercent = collaborators.reduce(
+    (sum, collab) => sum + Number(collab.percent || 0),
+    0
+  );
+
+  const updateCollaborator = (
+    id: string,
+    field: keyof Collaborator,
+    value: string
+  ) => {
+    setCollaborators((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              [field]: field === "percent" ? Number(value) : value,
+            }
+          : item
+      )
+    );
+  };
+
+  const addCollaborator = () => {
+    setCollaborators((prev) => [...prev, createCollaborator()]);
+  };
+
+  const removeCollaborator = (id: string) => {
+    setCollaborators((prev) => (prev.length === 1 ? prev : prev.filter((c) => c.id !== id)));
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!isConnected || !address) {
+      setStatus("error");
+      setStatusMessage(
+        t("Please connect a wallet first.", "请先连接钱包再提交。")
+      );
+      return;
+    }
+
+    setStatus("loading");
+    setStatusMessage(t("Writing to Polygon…", "正在写入 Polygon…"));
+    setTxLink(null);
+    setReceiptLink(null);
+
+    try {
+      const response = await fetch("/api/splits", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          projectName,
+          overview,
+          collaborators,
+          requester: address,
+        }),
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(text || "Failed to create split");
+      }
+
+      const payload = await response.json();
+      setTxLink(payload.txHash ?? null);
+      setReceiptLink(payload.receiptUrl ?? null);
+      setStatus("success");
+      setStatusMessage(t("Split recorded on Polygon.", "分账已写入 Polygon。"));
+    } catch (error) {
+      setStatus("error");
+      setStatusMessage(
+        error instanceof Error
+          ? error.message
+          : t("Unexpected error", "出现未知错误")
+      );
+    }
+  };
+
+  return (
+    <div className="rounded-[32px] border border-white/70 bg-white/95 p-6 shadow-lg">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="text-xs uppercase tracking-[0.35em] text-slate-400">
+            {t("Wallet path", "钱包流程")}
+          </p>
+          <h3 className="mt-2 text-2xl font-semibold text-slate-900">
+            {t("Connect + post on-chain", "连接钱包并写入链上")}
+          </h3>
+        </div>
+        <ConnectButton showBalance={false} accountStatus={{ smallScreen: "avatar", largeScreen: "full" }} />
+      </div>
+
+      <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+        <div>
+          <label className="text-xs uppercase tracking-[0.3em] text-slate-500">
+            {t("Project", "作品名称")}
+          </label>
+          <input
+            required
+            value={projectName}
+            onChange={(event) => setProjectName(event.target.value)}
+            placeholder={t("Midnight Bloom", "午夜绽放")}
+            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
+          />
+        </div>
+        <div>
+          <label className="text-xs uppercase tracking-[0.3em] text-slate-500">
+            {t("Overview", "概述")}
+          </label>
+          <textarea
+            value={overview}
+            onChange={(event) => setOverview(event.target.value)}
+            rows={3}
+            placeholder={t("Streaming + merch pool", "流媒体 + 周边分润池")}
+            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
+          />
+        </div>
+
+        <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-4">
+          <div className="flex items-baseline justify-between">
+            <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
+              {t("Collaborators", "协作者")}
+            </p>
+            <span className="text-xs text-slate-500">
+              {t("Total", "份额合计")} {totalPercent}%
+            </span>
+          </div>
+
+          <div className="mt-4 space-y-4">
+            {collaborators.map((collab, index) => (
+              <div
+                key={collab.id}
+                className="rounded-xl border border-slate-100 bg-white p-3"
+              >
+                <div className="flex items-center justify-between text-xs text-slate-400">
+                  <span>{t("Collaborator", "成员")} #{index + 1}</span>
+                  {collaborators.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeCollaborator(collab.id)}
+                      className="text-slate-500 transition hover:text-slate-900"
+                    >
+                      {t("Remove", "移除")}
+                    </button>
+                  )}
+                </div>
+                <div className="mt-2 grid gap-2 md:grid-cols-2">
+                  <input
+                    required
+                    value={collab.name}
+                    onChange={(event) =>
+                      updateCollaborator(collab.id, "name", event.target.value)
+                    }
+                    placeholder={t("Aura", "凌曦")}
+                    className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
+                  />
+                  <input
+                    value={collab.role}
+                    onChange={(event) =>
+                      updateCollaborator(collab.id, "role", event.target.value)
+                    }
+                    placeholder={t("Producer", "制作人")}
+                    className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
+                  />
+                </div>
+                <div className="mt-2 grid gap-2 md:grid-cols-2">
+                  <input
+                    type="email"
+                    value={collab.email}
+                    onChange={(event) =>
+                      updateCollaborator(collab.id, "email", event.target.value)
+                    }
+                    placeholder="team@label.com"
+                    className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
+                  />
+                  <input
+                    value={collab.payout}
+                    onChange={(event) =>
+                      updateCollaborator(collab.id, "payout", event.target.value)
+                    }
+                    placeholder={t("Wallet or PayPal", "钱包或 PayPal")}
+                    className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
+                  />
+                </div>
+                <div className="mt-2">
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={collab.percent}
+                    onChange={(event) =>
+                      updateCollaborator(collab.id, "percent", event.target.value)
+                    }
+                    placeholder="20"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            onClick={addCollaborator}
+            className="mt-4 w-full rounded-xl border border-dashed border-slate-300 px-3 py-2 text-sm font-semibold text-slate-600 transition hover:border-slate-500"
+          >
+            {t("Add collaborator", "新增协作者")}
+          </button>
+        </div>
+
+        <button
+          type="submit"
+          disabled={!isConnected || status === "loading"}
+          className="w-full rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {status === "loading"
+            ? t("Writing to Polygon…", "正在写入 Polygon…")
+            : t("Create on-chain split", "创建链上分账")}
+        </button>
+      </form>
+
+      {status !== "idle" && (
+        <div
+          className={`mt-4 rounded-2xl border p-4 text-sm ${
+            status === "success"
+              ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+              : status === "error"
+              ? "border-rose-200 bg-rose-50 text-rose-800"
+              : "border-slate-200 bg-slate-50 text-slate-700"
+          }`}
+        >
+          <p className="font-semibold">
+            {status === "success"
+              ? t("Success", "成功")
+              : status === "error"
+              ? t("Error", "错误")
+              : t("In progress", "进行中")}
+          </p>
+          {statusMessage && <p className="mt-1">{statusMessage}</p>}
+          <div className="mt-3 space-y-2">
+            {txLink && (
+              <a
+                href={`https://amoy.polygonscan.com/tx/${txLink}`}
+                target="_blank"
+                rel="noreferrer"
+                className="block text-xs font-semibold text-slate-900 underline"
+              >
+                {t("View transaction", "查看交易")}
+              </a>
+            )}
+            {receiptLink && (
+              <a
+                href={receiptLink}
+                target="_blank"
+                rel="noreferrer"
+                className="block text-xs font-semibold text-slate-900 underline"
+              >
+                {t("View receipt", "查看凭证")}
+              </a>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function LegacyAlphaForm({ lang }: { lang: "en" | "zh" }) {
+  const t = (en: string, zh: string) => (lang === "en" ? en : zh);
+  return (
+    <div className="rounded-[32px] border border-white/70 bg-white/95 p-6 shadow-lg">
+      <p className="text-xs uppercase tracking-[0.35em] text-slate-400">
+        {t("Backend assist", "后台代签")}
+      </p>
+      <h3 className="mt-2 text-2xl font-semibold text-slate-900">
+        {t("Submit form — we sign for you", "填写表单，由我们代签")}
+      </h3>
+      <p className="mt-2 text-sm text-slate-600">
+        {t(
+          "Best for collaborators without wallets. We store payout methods privately and write on-chain for you.",
+          "适合没有钱包的成员。我们私下保存收款方式并代你写入链上。"
+        )}
+      </p>
+      <form
+        className="mt-6 space-y-4"
+        method="POST"
+        action="https://formspree.io/f/mnqkagbl"
+        target="_blank"
+        rel="noreferrer"
+      >
+        <div>
+          <label className="text-xs uppercase tracking-[0.3em] text-slate-500">
+            {t("Name", "姓名")}
+          </label>
+          <input
+            required
+            name="name"
+            type="text"
+            placeholder={t("Aura Li", "李清扬")}
+            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
+          />
+        </div>
+        <div>
+          <label className="text-xs uppercase tracking-[0.3em] text-slate-500">
+            {t("Email", "邮箱")}
+          </label>
+          <input
+            required
+            name="email"
+            type="email"
+            placeholder="team@label.com"
+            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
+          />
+        </div>
+        <div>
+          <label className="text-xs uppercase tracking-[0.3em] text-slate-500">
+            {t("Role", "身份")}
+          </label>
+          <select
+            name="role"
+            required
+            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
+          >
+            <option value="artist">{t("Artist / Band", "音乐人 / 乐队")}</option>
+            <option value="producer">{t("Producer / Writer", "制作人 / 词曲")}</option>
+            <option value="manager">{t("Manager / Label", "经纪 / 厂牌")}</option>
+            <option value="ops">{t("Ops / Finance", "运营 / 财务")}</option>
+          </select>
+        </div>
+        <div>
+          <label className="text-xs uppercase tracking-[0.3em] text-slate-500">
+            {t("Annual indie revenue", "独立业务年收入")}
+          </label>
+          <select
+            name="revenue_range"
+            required
+            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
+          >
+            <option value="<10k">&lt;$10K</option>
+            <option value="10-50k">$10K–$50K</option>
+            <option value="50-200k">$50K–$200K</option>
+            <option value=">200k">$200K+</option>
+          </select>
+        </div>
+        <div>
+          <label className="text-xs uppercase tracking-[0.3em] text-slate-500">
+            {t("How do you pay now?", "现在如何结算？")}
+          </label>
+          <textarea
+            name="current_process"
+            rows={3}
+            placeholder={t("Google Sheets + wire transfers", "表格 + 转账")}
+            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
+          />
+        </div>
+        <input type="hidden" name="language" value={lang} />
+        <button
+          type="submit"
+          className="w-full rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:brightness-95"
+        >
+          {t("Submit + reserve", "提交并保留席位")}
+        </button>
+        <p className="text-center text-xs text-slate-500">
+          {t(
+            "Prefer email? Write us at team@indie-royalty.com",
+            "如果想通过邮件沟通，请写信至 team@indie-royalty.com"
+          )}
+        </p>
+      </form>
+    </div>
+  );
+}
 
 export default function Home() {
   const [lang, setLang] = useState<"en" | "zh">("en");
@@ -342,102 +754,9 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="rounded-[32px] border border-white/70 bg-white/95 p-6 shadow-lg">
-                <p className="text-xs uppercase tracking-[0.35em] text-slate-400">
-                  {t("Alpha intake", "内测报名")}
-                </p>
-                <h3 className="mt-2 text-2xl font-semibold text-slate-900">
-                  {t("Tell us how you split now.", "告诉我们你现在如何分账。")}
-                </h3>
-                <p className="mt-2 text-sm text-slate-600">
-                  {t(
-                    "We review every submission weekly and invite teams that need transparent payouts the most.",
-                    "我们每周筛选报名，优先邀请最需要透明分账的团队。"
-                  )}
-                </p>
-                <form
-                  className="mt-6 space-y-4"
-                  method="POST"
-                  action="https://formspree.io/f/mnqkagbl"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <div>
-                    <label className="text-xs uppercase tracking-[0.3em] text-slate-500">
-                      {t("Name", "姓名")}
-                    </label>
-                    <input
-                      required
-                      name="name"
-                      type="text"
-                      placeholder={t("Aura Li", "李清扬")}
-                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs uppercase tracking-[0.3em] text-slate-500">
-                      {t("Email", "邮箱")}
-                    </label>
-                    <input
-                      required
-                      name="email"
-                      type="email"
-                      placeholder="team@label.com"
-                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs uppercase tracking-[0.3em] text-slate-500">
-                      {t("Role", "身份")}
-                    </label>
-                    <select
-                      name="role"
-                      required
-                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
-                    >
-                      <option value="artist">{t("Artist / Band", "音乐人 / 乐队")}</option>
-                      <option value="producer">{t("Producer / Writer", "制作人 / 词曲")}</option>
-                      <option value="manager">{t("Manager / Label", "经纪 / 厂牌")}</option>
-                      <option value="ops">{t("Ops / Finance", "运营 / 财务")}</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-xs uppercase tracking-[0.3em] text-slate-500">
-                      {t("Annual indie revenue", "独立业务年收入")}
-                    </label>
-                    <select
-                      name="revenue_range"
-                      required
-                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
-                    >
-                      <option value="<10k">&lt;$10K</option>
-                      <option value="10-50k">$10K–$50K</option>
-                      <option value="50-200k">$50K–$200K</option>
-                      <option value=">200k">$200K+</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-xs uppercase tracking-[0.3em] text-slate-500">
-                      {t("How do you pay now?", "现在如何结算？")}
-                    </label>
-                    <textarea
-                      name="current_process"
-                      rows={3}
-                      placeholder={t("Google Sheets + wire transfers", "表格 + 转账")}
-                      className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
-                    />
-                  </div>
-                  <input type="hidden" name="language" value={lang} />
-                  <button
-                    type="submit"
-                    className="w-full rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:brightness-95"
-                  >
-                    {t("Submit + reserve", "提交并保留席位")}
-                  </button>
-                  <p className="text-center text-xs text-slate-500">
-                    {t("Prefer email? Write us at team@indie-royalty.com", "如果想通过邮件沟通，请写信至 team@indie-royalty.com")}
-                  </p>
-                </form>
+              <div className="space-y-6">
+                <WalletSplitCard lang={lang} />
+                <LegacyAlphaForm lang={lang} />
               </div>
             </div>
           </section>
