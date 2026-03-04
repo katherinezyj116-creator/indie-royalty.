@@ -1,8 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount } from "wagmi";
+import { useAccount, useConnect, useDisconnect } from "wagmi";
 
 const navLinks = [
   { label: { en: "Product", zh: "产品" }, href: "#product" },
@@ -180,6 +179,13 @@ const createCollaborator = (): Collaborator => ({
 function WalletSplitCard({ lang }: { lang: "en" | "zh" }) {
   const t = (en: string, zh: string) => (lang === "en" ? en : zh);
   const { isConnected, address } = useAccount();
+  const { connect, connectors, status: connectStatus, error: connectError } = useConnect();
+  const { disconnect } = useDisconnect();
+  const primaryConnector = connectors[0];
+  const secondaryConnector = connectors[1];
+  const shortAddress = address
+    ? `${address.slice(0, 6)}…${address.slice(-4)}`
+    : "";
   const [projectName, setProjectName] = useState("");
   const [overview, setOverview] = useState("");
   const [collaborators, setCollaborators] = useState<Collaborator[]>([
@@ -280,7 +286,38 @@ function WalletSplitCard({ lang }: { lang: "en" | "zh" }) {
             {t("Connect + post on-chain", "连接钱包并写入链上")}
           </h3>
         </div>
-        <ConnectButton showBalance={false} accountStatus={{ smallScreen: "avatar", largeScreen: "full" }} />
+        <div className="flex flex-col items-end gap-2 text-right text-xs text-slate-500">
+          <button
+            type="button"
+            onClick={() =>
+              isConnected
+                ? disconnect()
+                : primaryConnector
+                ? connect({ connector: primaryConnector })
+                : undefined
+            }
+            disabled={!primaryConnector || connectStatus === "pending"}
+            className="rounded-full border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:border-slate-400 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isConnected
+              ? `${shortAddress} · ${t("Disconnect", "断开")}`
+              : connectStatus === "pending"
+              ? t("Connecting…", "正在连接…")
+              : t("Connect wallet", "连接钱包")}
+          </button>
+          {secondaryConnector && !isConnected && (
+            <button
+              type="button"
+              onClick={() => connect({ connector: secondaryConnector })}
+              className="text-xs font-semibold text-slate-500 underline-offset-2 hover:underline"
+            >
+              {t("Use WalletConnect instead", "改用 WalletConnect")}
+            </button>
+          )}
+          {connectError && (
+            <p className="text-xs text-rose-500">{connectError.message}</p>
+          )}
+        </div>
       </div>
 
       <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
