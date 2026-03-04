@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 
@@ -625,6 +626,12 @@ export default function Home() {
           >
             {lang === "en" ? "中文" : "EN"}
           </button>
+          <Link
+            href="/signup"
+            className="rounded-full bg-emerald-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:brightness-105"
+          >
+            {t("Signup", "注册预览")}
+          </Link>
           <a
             href="mailto:team@indie-royalty.com"
             className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:brightness-95"
