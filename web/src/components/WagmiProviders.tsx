@@ -3,8 +3,8 @@
 import { ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider, createConfig, http } from "wagmi";
-import { polygonAmoy } from "wagmi/chains";
 import { injected, walletConnect } from "wagmi/connectors";
+import { polygonAmoy } from "wagmi/chains";
 
 const walletConnectProjectId =
   process.env.NEXT_PUBLIC_WALLETCONNECT_ID || "demo-indie-royalty";
@@ -34,7 +34,7 @@ const wagmiConfig = createConfig({
   transports: {
     [polygonAmoy.id]: http(
       process.env.NEXT_PUBLIC_POLYGON_AMOY_RPC ||
-        "https://rpc-amoy.polygon.technology"
+        "https://rpc-amoy.polygon.technology",
     ),
   },
   connectors: connectorsValue,

@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 
@@ -184,9 +183,7 @@ function WalletSplitCard({ lang }: { lang: "en" | "zh" }) {
   const { disconnect } = useDisconnect();
   const primaryConnector = connectors[0];
   const secondaryConnector = connectors[1];
-  const shortAddress = address
-    ? `${address.slice(0, 6)}…${address.slice(-4)}`
-    : "";
+  const shortAddress = address ? `${address.slice(0, 6)}…${address.slice(-4)}` : "";
   const [projectName, setProjectName] = useState("");
   const [overview, setOverview] = useState("");
   const [collaborators, setCollaborators] = useState<Collaborator[]>([
@@ -245,7 +242,7 @@ function WalletSplitCard({ lang }: { lang: "en" | "zh" }) {
     setReceiptLink(null);
 
     try {
-      const response = await fetch("/api/splits", {
+      const response = await fetch("/api/projects", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -253,6 +250,7 @@ function WalletSplitCard({ lang }: { lang: "en" | "zh" }) {
           overview,
           collaborators,
           requester: address,
+          language: lang,
         }),
       });
 
@@ -265,7 +263,12 @@ function WalletSplitCard({ lang }: { lang: "en" | "zh" }) {
       setTxLink(payload.txHash ?? null);
       setReceiptLink(payload.receiptUrl ?? null);
       setStatus("success");
-      setStatusMessage(t("Split recorded on Polygon.", "分账已写入 Polygon。"));
+      setStatusMessage(
+        t(
+          "Project saved. On-chain publishing will use this data.",
+          "分账草稿已保存，链上发布时会直接使用这些数据。",
+        ),
+      );
     } catch (error) {
       setStatus("error");
       setStatusMessage(
@@ -498,6 +501,48 @@ function WalletSplitCard({ lang }: { lang: "en" | "zh" }) {
 
 function LegacyAlphaForm({ lang }: { lang: "en" | "zh" }) {
   const t = (en: string, zh: string) => (lang === "en" ? en : zh);
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    role: "artist",
+    revenue_range: "<10k",
+    current_process: "",
+  });
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+
+  const handleChange = (field: keyof typeof form, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setStatus("loading");
+    setStatusMessage(t("Submitting…", "提交中…"));
+
+    try {
+      const response = await fetch("/api/alpha-intake", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, language: lang }),
+      });
+
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(text || "Failed to submit form");
+      }
+
+      setStatus("success");
+      setStatusMessage(t("We saved your info. Check your inbox soon.", "已收到信息，稍后会邮件联系你。"));
+      setForm({ name: "", email: "", role: "artist", revenue_range: "<10k", current_process: "" });
+    } catch (error) {
+      setStatus("error");
+      setStatusMessage(
+        error instanceof Error ? error.message : t("Unexpected error", "出现未知错误"),
+      );
+    }
+  };
+
   return (
     <div className="rounded-[32px] border border-white/70 bg-white/95 p-6 shadow-lg">
       <p className="text-xs uppercase tracking-[0.35em] text-slate-400">
@@ -509,16 +554,10 @@ function LegacyAlphaForm({ lang }: { lang: "en" | "zh" }) {
       <p className="mt-2 text-sm text-slate-600">
         {t(
           "Best for collaborators without wallets. We store payout methods privately and write on-chain for you.",
-          "适合没有钱包的成员。我们私下保存收款方式并代你写入链上。"
+          "适合没有钱包的成员。我们私下保存收款方式并代你写入链上。",
         )}
       </p>
-      <form
-        className="mt-6 space-y-4"
-        method="POST"
-        action="https://formspree.io/f/mnqkagbl"
-        target="_blank"
-        rel="noreferrer"
-      >
+      <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
         <div>
           <label className="text-xs uppercase tracking-[0.3em] text-slate-500">
             {t("Name", "姓名")}
@@ -527,6 +566,8 @@ function LegacyAlphaForm({ lang }: { lang: "en" | "zh" }) {
             required
             name="name"
             type="text"
+            value={form.name}
+            onChange={(event) => handleChange("name", event.target.value)}
             placeholder={t("Aura Li", "李清扬")}
             className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
           />
@@ -539,6 +580,8 @@ function LegacyAlphaForm({ lang }: { lang: "en" | "zh" }) {
             required
             name="email"
             type="email"
+            value={form.email}
+            onChange={(event) => handleChange("email", event.target.value)}
             placeholder="team@label.com"
             className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
           />
@@ -550,6 +593,8 @@ function LegacyAlphaForm({ lang }: { lang: "en" | "zh" }) {
           <select
             name="role"
             required
+            value={form.role}
+            onChange={(event) => handleChange("role", event.target.value)}
             className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
           >
             <option value="artist">{t("Artist / Band", "音乐人 / 乐队")}</option>
@@ -565,6 +610,8 @@ function LegacyAlphaForm({ lang }: { lang: "en" | "zh" }) {
           <select
             name="revenue_range"
             required
+            value={form.revenue_range}
+            onChange={(event) => handleChange("revenue_range", event.target.value)}
             className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
           >
             <option value="<10k">&lt;$10K</option>
@@ -580,23 +627,38 @@ function LegacyAlphaForm({ lang }: { lang: "en" | "zh" }) {
           <textarea
             name="current_process"
             rows={3}
+            value={form.current_process}
+            onChange={(event) => handleChange("current_process", event.target.value)}
             placeholder={t("Google Sheets + wire transfers", "表格 + 转账")}
             className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-slate-900 focus:outline-none"
           />
         </div>
-        <input type="hidden" name="language" value={lang} />
         <button
           type="submit"
-          className="w-full rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:brightness-95"
+          disabled={status === "loading"}
+          className="w-full rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {t("Submit + reserve", "提交并保留席位")}
+          {status === "loading" ? t("Submitting…", "提交中…") : t("Submit + reserve", "提交并保留席位")}
         </button>
         <p className="text-center text-xs text-slate-500">
           {t(
             "Prefer email? Write us at team@indie-royalty.com",
-            "如果想通过邮件沟通，请写信至 team@indie-royalty.com"
+            "如果想通过邮件沟通，请写信至 team@indie-royalty.com",
           )}
         </p>
+        {status !== "idle" && statusMessage && (
+          <div
+            className={`rounded-2xl border p-3 text-xs ${
+              status === "success"
+                ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+                : status === "error"
+                ? "border-rose-200 bg-rose-50 text-rose-800"
+                : "border-slate-200 bg-slate-50 text-slate-700"
+            }`}
+          >
+            {statusMessage}
+          </div>
+        )}
       </form>
     </div>
   );
@@ -626,12 +688,6 @@ export default function Home() {
           >
             {lang === "en" ? "中文" : "EN"}
           </button>
-          <Link
-            href="/signup"
-            className="rounded-full bg-emerald-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:brightness-105"
-          >
-            {t("Signup", "注册预览")}
-          </Link>
           <a
             href="mailto:team@indie-royalty.com"
             className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:brightness-95"
