@@ -4,9 +4,9 @@ import Link from "next/link";
 import { PageShell } from "../../components/PageShell";
 import { useAuthStore } from "../../lib/stores/auth";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ProjectList } from "../../components/ProjectList";
+import { ProjectList, type ProjectSummary } from "../../components/ProjectList";
 import { WalletSplitForm, AlphaAssistForm } from "../../components/StepForms";
 
 export default function DashboardPage() {
@@ -17,6 +17,9 @@ export default function DashboardPage() {
   const { isConnected, address } = useAccount();
   const { connect, connectors, status } = useConnect();
   const { disconnect } = useDisconnect();
+  const [projects, setProjects] = useState<ProjectSummary[]>([]);
+  const [alphaEntries, setAlphaEntries] = useState(0);
+  const [summaryLoading, setSummaryLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -25,15 +28,66 @@ export default function DashboardPage() {
     })();
   }, [hydrate]);
 
+  const loadSummary = useCallback(async (signal?: AbortSignal) => {
+    try {
+      setSummaryLoading(true);
+      const [projectsResponse, alphaResponse] = await Promise.all([
+        fetch("/api/projects", { signal }),
+        fetch("/api/alpha-intake", { signal }),
+      ]);
+
+      if (!projectsResponse.ok) {
+        throw new Error("Failed to load projects");
+      }
+      const projectsPayload = await projectsResponse.json();
+      setProjects(projectsPayload.projects ?? []);
+
+      if (!alphaResponse.ok) {
+        throw new Error("Failed to load alpha intake");
+      }
+      const alphaPayload = await alphaResponse.json();
+      setAlphaEntries(Array.isArray(alphaPayload.entries) ? alphaPayload.entries.length : 0);
+    } catch (error) {
+      console.error("dashboard summary error", error);
+    } finally {
+      setSummaryLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     if (!loading && !profile) {
       router.push("/login");
     }
   }, [loading, profile, router]);
 
+  useEffect(() => {
+    if (!profile) return;
+    const controller = new AbortController();
+    loadSummary(controller.signal);
+    return () => controller.abort();
+  }, [profile, loadSummary]);
+
   const shortAddress = useMemo(
     () => (address ? `${address.slice(0, 6)}…${address.slice(-4)}` : ""),
     [address],
+  );
+
+  const step1Done = projects.length > 0;
+  const step2Done = alphaEntries > 0;
+  const step3Done = projects.length > 0;
+
+  const renderStatus = (done: boolean) => (
+    <span
+      className={`rounded-full px-3 py-1 text-xs font-semibold ${
+        summaryLoading
+          ? "bg-white/5 text-white/70"
+          : done
+          ? "bg-emerald-400/20 text-emerald-100"
+          : "bg-white/5 text-white/60"
+      }`}
+    >
+      {summaryLoading ? "检查中…" : done ? "已完成" : "待完成"}
+    </span>
   );
 
   if (loading) {
@@ -82,12 +136,26 @@ export default function DashboardPage() {
       </div>
 
       <div className="space-y-10">
-        <section id="step-1">
-          <WalletSplitForm />
+        <section id="step-1" className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-[0.35em] text-white/60">Step 1</p>
+              <h3 className="mt-1 text-xl font-semibold text-white">Wallet split</h3>
+            </div>
+            {renderStatus(step1Done)}
+          </div>
+          <WalletSplitForm onSuccess={() => loadSummary()} />
         </section>
 
-        <section id="step-2">
-          <AlphaAssistForm />
+        <section id="step-2" className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-[0.35em] text-white/60">Step 2</p>
+              <h3 className="mt-1 text-xl font-semibold text-white">Alpha assist</h3>
+            </div>
+            {renderStatus(step2Done)}
+          </div>
+          <AlphaAssistForm onSuccess={() => loadSummary()} />
         </section>
 
         <section id="step-3" className="rounded-[32px] border border-white/10 bg-white/5 p-6">
@@ -99,15 +167,18 @@ export default function DashboardPage() {
                 审核 Supabase 数据、准备链上或 Raidar 同步。这里会列出你最近的草稿。
               </p>
             </div>
-            <Link
-              href="/"
-              className="rounded-full border border-white/20 px-4 py-2 text-xs font-semibold text-white"
-            >
-              返回 Landing
-            </Link>
+            <div className="flex items-center gap-3">
+              {renderStatus(step3Done)}
+              <Link
+                href="/"
+                className="rounded-full border border-white/20 px-4 py-2 text-xs font-semibold text-white"
+              >
+                返回 Landing
+              </Link>
+            </div>
           </div>
           <div className="mt-6">
-            <ProjectList />
+            <ProjectList initialProjects={projects} />
           </div>
         </section>
       </div>

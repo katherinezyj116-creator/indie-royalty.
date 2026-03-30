@@ -56,3 +56,34 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+
+export async function GET(request: NextRequest) {
+  try {
+    const token = request.cookies.get(getSessionCookieName())?.value ?? null;
+    const session = token ? await fetchProfileBySession(token) : null;
+
+    if (!session) {
+      const response = NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      if (token) {
+        clearSessionCookie(response);
+      }
+      return response;
+    }
+
+    const { data, error } = await supabase
+      .from("alpha_intake")
+      .select("id, name, email, role, revenue_range, created_at")
+      .eq("profile_id", session.profile.id)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      throw error;
+    }
+
+    return NextResponse.json({ entries: data ?? [] });
+  } catch (error) {
+    console.error("/api/alpha-intake GET error", error);
+    return NextResponse.json({ error: "Unable to load alpha intake" }, { status: 500 });
+  }
+}

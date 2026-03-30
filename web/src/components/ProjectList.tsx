@@ -9,7 +9,7 @@ type CollaboratorSummary = {
   percent: number | null;
 };
 
-type ProjectSummary = {
+export type ProjectSummary = {
   id: string;
   name: string;
   overview: string | null;
@@ -18,14 +18,19 @@ type ProjectSummary = {
   collaborators?: CollaboratorSummary[] | null;
 };
 
-export function ProjectList() {
-  const [projects, setProjects] = useState<ProjectSummary[]>([]);
-  const [loading, setLoading] = useState(true);
+export function ProjectList({ initialProjects }: { initialProjects?: ProjectSummary[] }) {
+  const [projects, setProjects] = useState<ProjectSummary[]>(initialProjects ?? []);
+  const [loading, setLoading] = useState(!initialProjects);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
     async function load() {
+      if (initialProjects) {
+        setProjects(initialProjects);
+        setLoading(false);
+        return;
+      }
       try {
         const response = await fetch("/api/projects", {
           method: "GET",
@@ -48,7 +53,7 @@ export function ProjectList() {
 
     load();
     return () => controller.abort();
-  }, []);
+  }, [initialProjects]);
 
   if (loading) {
     return <p className="text-sm text-slate-400">Loading drafts…</p>;

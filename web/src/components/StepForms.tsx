@@ -26,7 +26,7 @@ const createCollaborator = (): Collaborator => ({
 
 const t = (lang: "en" | "zh", en: string, zh: string) => (lang === "en" ? en : zh);
 
-export function WalletSplitForm({ lang = "en" }: { lang?: "en" | "zh" }) {
+export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"; onSuccess?: () => void }) {
   const { isConnected, address } = useAccount();
   const { connect, connectors, status: connectStatus, error: connectError } = useConnect();
   const { disconnect } = useDisconnect();
@@ -105,6 +105,7 @@ export function WalletSplitForm({ lang = "en" }: { lang?: "en" | "zh" }) {
       setProjectName("");
       setOverview("");
       setCollaborators([createCollaborator()]);
+      onSuccess?.();
     } catch (error) {
       setStatus("error");
       setStatusMessage(
@@ -115,19 +116,9 @@ export function WalletSplitForm({ lang = "en" }: { lang?: "en" | "zh" }) {
 
   return (
     <div className="rounded-[32px] border border-white/15 bg-white/5 p-6 text-white">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <p className="text-xs uppercase tracking-[0.35em] text-emerald-200">
-            {t(lang, "Step 1", "第一步")}
-          </p>
-          <h3 className="mt-1 text-2xl font-semibold">
-            {t(lang, "Wallet split", "钱包分账")}
-          </h3>
-          <p className="text-sm text-slate-200">
-            {t(lang, "Connect a wallet and draft the split tree.", "连接钱包并起草分账树。")}
-          </p>
-        </div>
-        <div className="text-right text-sm text-slate-300">
+      <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-white/80">
+        <p className="text-white/60">连接钱包后即可保存分账草稿。</p>
+        <div className="text-right">
           <button
             type="button"
             onClick={() =>
@@ -138,7 +129,7 @@ export function WalletSplitForm({ lang = "en" }: { lang?: "en" | "zh" }) {
                 : undefined
             }
             disabled={!primaryConnector || connectStatus === "pending"}
-            className="rounded-full border border-white/20 px-4 py-2 text-sm font-semibold transition hover:border-white/40 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-full border border-white/30 px-4 py-2 text-xs font-semibold text-white transition hover:border-white disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isConnected
               ? `${shortAddress} · ${t(lang, "Disconnect", "断开")}`
@@ -150,7 +141,7 @@ export function WalletSplitForm({ lang = "en" }: { lang?: "en" | "zh" }) {
             <button
               type="button"
               onClick={() => connect({ connector: secondaryConnector })}
-              className="mt-2 block text-xs font-semibold text-slate-400 underline"
+              className="mt-2 block text-xs font-semibold text-white/60 underline"
             >
               {t(lang, "Use WalletConnect instead", "改用 WalletConnect")}
             </button>
@@ -161,7 +152,7 @@ export function WalletSplitForm({ lang = "en" }: { lang?: "en" | "zh" }) {
         </div>
       </div>
 
-      <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+      <form className="space-y-4" onSubmit={handleSubmit}>
         <div>
           <label className="text-xs uppercase tracking-[0.3em] text-slate-300">
             {t(lang, "Project", "作品名称")}
@@ -299,7 +290,7 @@ export function WalletSplitForm({ lang = "en" }: { lang?: "en" | "zh" }) {
   );
 }
 
-export function AlphaAssistForm({ lang = "en" }: { lang?: "en" | "zh" }) {
+export function AlphaAssistForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"; onSuccess?: () => void }) {
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -341,6 +332,7 @@ export function AlphaAssistForm({ lang = "en" }: { lang?: "en" | "zh" }) {
         t(lang, "We saved your info. Check your inbox soon.", "已收到信息，稍后会邮件联系你。"),
       );
       setForm({ name: "", email: "", role: "artist", revenue_range: "<10k", current_process: "" });
+      onSuccess?.();
     } catch (error) {
       setStatus("error");
       setStatusMessage(
