@@ -1,9 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { PageShell } from "../../components/PageShell";
 import { useAuthStore } from "../../lib/stores/auth";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { ProjectList } from "../../components/ProjectList";
 
 const cards = [
   {
@@ -22,14 +25,52 @@ const cards = [
 
 export default function DashboardPage() {
   const profile = useAuthStore((state) => state.profile);
+  const hydrate = useAuthStore((state) => state.hydrate);
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
   const { isConnected, address } = useAccount();
   const { connect, connectors, status } = useConnect();
   const { disconnect } = useDisconnect();
+
+  useEffect(() => {
+    (async () => {
+      await hydrate();
+      setLoading(false);
+    })();
+  }, [hydrate]);
+
+  useEffect(() => {
+    if (!loading && !profile) {
+      router.push("/login");
+    }
+  }, [loading, profile, router]);
 
   const shortAddress = useMemo(
     () => (address ? `${address.slice(0, 6)}…${address.slice(-4)}` : ""),
     [address]
   );
+
+  if (loading) {
+    return (
+      <PageShell title="Loading..." subtitle="正在验证你的会话">
+        <p className="text-sm text-slate-300">Checking your session…</p>
+      </PageShell>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <PageShell title="Please log in" subtitle="登录后继续管理 splits 和粉丝权益。">
+        <p className="text-sm text-slate-300">Your session expired.</p>
+        <Link
+          href="/login"
+          className="mt-4 inline-flex rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-slate-900"
+        >
+          Go to login
+        </Link>
+      </PageShell>
+    );
+  }
 
   return (
     <PageShell
@@ -65,6 +106,24 @@ export default function DashboardPage() {
             <p className="mt-2 text-sm text-slate-300">{card.body}</p>
           </div>
         ))}
+      </div>
+      <div className="mt-10 grid gap-8 lg:grid-cols-2">
+        <div>
+          <p className="text-sm uppercase tracking-[0.35em] text-slate-400">Drafts</p>
+          <h3 className="mt-2 text-xl font-semibold text-white">Recent split projects</h3>
+          <ProjectList />
+        </div>
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-sm text-slate-200">
+          <p className="text-xs uppercase tracking-[0.35em] text-emerald-200">Step builder</p>
+          <h3 className="mt-2 text-xl font-semibold text-white">Create or update splits</h3>
+          <p className="mt-2 text-slate-300">Use the interactive form (Step 1 & 2) on the main page. You can open it in a new tab—your login session is already active.</p>
+          <Link
+            href="/#alpha"
+            className="mt-4 inline-flex rounded-full bg-white/90 px-5 py-2 text-sm font-semibold text-slate-900"
+          >
+            Open split workflow
+          </Link>
+        </div>
       </div>
     </PageShell>
   );

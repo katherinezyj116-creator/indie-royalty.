@@ -19,23 +19,29 @@ type FormValues = z.infer<typeof formSchema>;
 
 export default function SignupPage() {
   const router = useRouter();
-  const setAuth = useAuthStore((state) => state.setAuth);
-  const [status, setStatus] = useState<string | null>(null);
+  const setProfile = useAuthStore((state) => state.setProfile);
+  const [status, setStatus] = useState<{ message: string; tone: "success" | "error" } | null>(null);
   const { register, handleSubmit, formState } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: { name: "", email: "", password: "" },
   });
 
   const onSubmit = async (values: FormValues) => {
-    setStatus("Registering...");
+    setStatus({ message: "Registering...", tone: "success" });
     const response = await fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
     });
+    if (!response.ok) {
+      const payload = await response.json();
+      setStatus({ message: payload?.error ?? "Signup failed", tone: "error" });
+      return;
+    }
+
     const payload = await response.json();
-    setAuth(payload);
-    setStatus("Success! Redirecting...");
+    setProfile(payload.profile);
+    setStatus({ message: "Success! Redirecting...", tone: "success" });
     router.push("/dashboard");
   };
 
@@ -84,9 +90,15 @@ export default function SignupPage() {
           type="submit"
           className="w-full rounded-full bg-emerald-400 px-6 py-3 text-sm font-semibold text-slate-900 transition hover:brightness-110"
         >
-          {formState.isSubmitting ? "Processing..." : "Mock Signup"}
+          {formState.isSubmitting ? "Processing..." : "Sign up"}
         </button>
-        {status && <p className="text-sm text-emerald-200">{status}</p>}
+        {status && (
+          <p
+            className={`text-sm ${status.tone === "error" ? "text-rose-300" : "text-emerald-200"}`}
+          >
+            {status.message}
+          </p>
+        )}
       </form>
       <p className="text-sm text-slate-300">
         Already have an account?{" "}

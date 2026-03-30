@@ -7,6 +7,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "../../lib/stores/auth";
+import { useState } from "react";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -17,20 +18,30 @@ type FormValues = z.infer<typeof formSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
-  const setAuth = useAuthStore((state) => state.setAuth);
+  const setProfile = useAuthStore((state) => state.setProfile);
+  const [status, setStatus] = useState<{ message: string; tone: "success" | "error" } | null>(null);
   const { register, handleSubmit, formState } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: { email: "", password: "" },
   });
 
   const onSubmit = async (values: FormValues) => {
+    setStatus({ message: "Logging in...", tone: "success" });
     const response = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
     });
+
+    if (!response.ok) {
+      const payload = await response.json();
+      setStatus({ message: payload?.error ?? "Login failed", tone: "error" });
+      return;
+    }
+
     const payload = await response.json();
-    setAuth(payload);
+    setProfile(payload.profile);
+    setStatus({ message: "Success! Redirecting...", tone: "success" });
     router.push("/dashboard");
   };
 
@@ -65,8 +76,15 @@ export default function LoginPage() {
           type="submit"
           className="w-full rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:brightness-90"
         >
-          {formState.isSubmitting ? "Processing..." : "Mock Login"}
+          {formState.isSubmitting ? "Processing..." : "Log in"}
         </button>
+        {status && (
+          <p
+            className={`text-sm ${status.tone === "error" ? "text-rose-300" : "text-emerald-200"}`}
+          >
+            {status.message}
+          </p>
+        )}
       </form>
       <p className="text-sm text-slate-300">
         Need an account?{" "}

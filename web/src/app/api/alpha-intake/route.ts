@@ -1,8 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabaseClient";
+import { clearSessionCookie, fetchProfileBySession, getSessionCookieName } from "@/lib/session";
 
 export async function POST(request: NextRequest) {
   try {
+    const token = request.cookies.get(getSessionCookieName())?.value ?? null;
+    const session = token ? await fetchProfileBySession(token) : null;
+
+    if (!session) {
+      const response = NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      if (token) {
+        clearSessionCookie(response);
+      }
+      return response;
+    }
+
     const body = await request.json();
     const { name, email, role, revenue_range, current_process, language } =
       body ?? {};
@@ -22,6 +34,7 @@ export async function POST(request: NextRequest) {
         revenue_range,
         current_process,
         language: language ?? "en",
+        profile_id: session.profile.id,
       },
     ]);
 

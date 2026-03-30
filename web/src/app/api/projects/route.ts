@@ -1,5 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/lib/supabaseClient";
+import { clearSessionCookie, fetchProfileBySession, getSessionCookieName } from "@/lib/session";
+
+async function resolveSession(request: NextRequest) {
+  const token = request.cookies.get(getSessionCookieName())?.value ?? null;
+  if (!token) {
+    return { token: null, session: null } as const;
+  }
+  const session = await fetchProfileBySession(token);
+  return { token, session } as const;
+}
+
+function unauthorizedResponse(token: string | null) {
+  const response = NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (token) {
+    clearSessionCookie(response);
+  }
+  return response;
+}
 
 type IncomingCollaborator = {
   name?: string;
@@ -19,6 +37,11 @@ type ProjectRequestBody = {
 
 export async function POST(request: NextRequest) {
   try {
+    const { token, session } = await resolveSession(request);
+    if (!session) {
+      return unauthorizedResponse(token);
+    }
+
     const body: ProjectRequestBody = await request.json();
     const { projectName, overview, requester, language } = body ?? {};
     const collaborators: IncomingCollaborator[] = Array.isArray(body?.collaborators)
@@ -46,6 +69,7 @@ export async function POST(request: NextRequest) {
           language: language ?? "en",
           requester_address: requester,
           total_percent: totalPercent,
+          owner_profile_id: session.profile.id,
         },
       ])
       .select("id")
@@ -86,5 +110,31 @@ export async function POST(request: NextRequest) {
       },
       { status: 500 },
     );
+  }
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    const { token, session } = await resolveSession(request);
+    if (!session) {
+      return unauthorizedResponse(token);
+    }
+
+    const { data, error } = await supabase
+      .from("projects")
+      .select(
+        "id, name, overview, total_percent, created_at, collaborators ( name, role, percent )",
+      )
+      .eq("owner_profile_id", session.profile.id)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      throw error;
+    }
+
+    return NextResponse.json({ projects: data ?? [] });
+  } catch (error) {
+    console.error("/api/projects GET error", error);
+    return NextResponse.json({ error: "Unable to load projects" }, { status: 500 });
   }
 }

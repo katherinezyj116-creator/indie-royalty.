@@ -255,6 +255,11 @@ function WalletSplitCard({ lang }: { lang: "en" | "zh" }) {
       });
 
       if (!response.ok) {
+        if (response.status === 401) {
+          setStatus("error");
+          setStatusMessage(t("Please log in before posting a split.", "提交分账前请先登录账户。"));
+          return;
+        }
         const text = await response.text();
         throw new Error(text || "Failed to create split");
       }
@@ -528,6 +533,11 @@ function LegacyAlphaForm({ lang }: { lang: "en" | "zh" }) {
       });
 
       if (!response.ok) {
+        if (response.status === 401) {
+          setStatus("error");
+          setStatusMessage(t("Please log in before submitting.", "提交前请先登录账户。"));
+          return;
+        }
         const text = await response.text();
         throw new Error(text || "Failed to submit form");
       }
