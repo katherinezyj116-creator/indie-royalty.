@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabaseClient";
+import { getSupabaseClient } from "@/lib/supabaseClient";
 import { clearSessionCookie, fetchProfileBySession, getSessionCookieName } from "@/lib/session";
 
 export async function POST(request: NextRequest) {
@@ -15,6 +15,7 @@ export async function POST(request: NextRequest) {
       return response;
     }
 
+    const supabase = getSupabaseClient();
     const body = await request.json();
     const { name, email, role, revenue_range, current_process, language } =
       body ?? {};
@@ -71,6 +72,7 @@ export async function GET(request: NextRequest) {
       return response;
     }
 
+    const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from("alpha_intake")
       .select("id, name, email, role, revenue_range, created_at")

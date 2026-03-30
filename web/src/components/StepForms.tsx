@@ -24,7 +24,7 @@ const createCollaborator = (): Collaborator => ({
   percent: 0,
 });
 
-const t = (lang: "en" | "zh", en: string, zh: string) => (lang === "en" ? en : zh);
+const t = (_lang: "en" | "zh", en: string) => en;
 
 export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"; onSuccess?: () => void }) {
   const { isConnected, address } = useAccount();
@@ -62,12 +62,12 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
     event.preventDefault();
     if (!isConnected || !address) {
       setStatus("error");
-      setStatusMessage(t(lang, "Please connect a wallet first.", "请先连接钱包再提交。"));
+      setStatusMessage(t(lang, "Please connect a wallet first."));
       return;
     }
 
     setStatus("loading");
-    setStatusMessage(t(lang, "Writing to Polygon…", "正在写入 Polygon…"));
+    setStatusMessage(t(lang, "Writing to Polygon…"));
 
     try {
       const response = await fetch("/api/projects", {
@@ -86,7 +86,7 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
         if (response.status === 401) {
           setStatus("error");
           setStatusMessage(
-            t(lang, "Please log in before posting a split.", "提交分账前请先登录账户。"),
+            t(lang, "Please log in before posting a split."),
           );
           return;
         }
@@ -95,13 +95,7 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
       }
 
       setStatus("success");
-      setStatusMessage(
-        t(
-          lang,
-          "Project saved. On-chain publishing will use this data.",
-          "分账草稿已保存，链上发布时会直接使用这些数据。",
-        ),
-      );
+      setStatusMessage(t(lang, "Project saved. On-chain publishing will use this data."));
       setProjectName("");
       setOverview("");
       setCollaborators([createCollaborator()]);
@@ -109,7 +103,7 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
     } catch (error) {
       setStatus("error");
       setStatusMessage(
-        error instanceof Error ? error.message : t(lang, "Unexpected error", "出现未知错误"),
+        error instanceof Error ? error.message : t(lang, "Unexpected error"),
       );
     }
   };
@@ -117,7 +111,7 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
   return (
     <div className="rounded-[32px] border border-slate-200 bg-white p-6 text-slate-900">
       <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-slate-600">
-        <p className="text-slate-500">连接钱包后即可保存分账草稿。</p>
+        <p className="text-slate-500">Connect a wallet before saving split drafts.</p>
         <div className="text-right">
           <button
             type="button"
@@ -132,10 +126,10 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
             className="rounded-full border border-pink-200 px-4 py-2 text-xs font-semibold text-pink-600 transition hover:border-pink-400 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isConnected
-              ? `${shortAddress} · ${t(lang, "Disconnect", "断开")}`
+              ? `${shortAddress} · ${t(lang, "Disconnect")}`
               : connectStatus === "pending"
-              ? t(lang, "Connecting…", "正在连接…")
-              : t(lang, "Connect wallet", "连接钱包")}
+              ? t(lang, "Connecting…")
+              : t(lang, "Connect wallet")}
           </button>
           {secondaryConnector && !isConnected && (
             <button
@@ -143,7 +137,7 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
               onClick={() => connect({ connector: secondaryConnector })}
               className="mt-2 block text-xs font-semibold text-slate-500 underline"
             >
-              {t(lang, "Use WalletConnect instead", "改用 WalletConnect")}
+              {t(lang, "Use WalletConnect instead")}
             </button>
           )}
           {connectError && (
@@ -155,34 +149,34 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
       <form className="space-y-4" onSubmit={handleSubmit}>
         <div>
           <label className="text-xs uppercase tracking-[0.3em] text-slate-300">
-            {t(lang, "Project", "作品名称")}
+            {t(lang, "Project")}
           </label>
           <input
             required
             value={projectName}
             onChange={(event) => setProjectName(event.target.value)}
-            placeholder={t(lang, "Midnight Bloom", "午夜绽放")}
+            placeholder={t(lang, "Midnight Bloom")}
             className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-pink-400 focus:outline-none"
           />
         </div>
         <div>
           <label className="text-xs uppercase tracking-[0.3em] text-slate-300">
-            {t(lang, "Overview", "概述")}
+            {t(lang, "Overview")}
           </label>
           <textarea
             value={overview}
             onChange={(event) => setOverview(event.target.value)}
             rows={3}
-            placeholder={t(lang, "Streaming + merch pool", "流媒体 + 周边分润池")}
+            placeholder={t(lang, "Streaming + merch pool")}
             className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-pink-400 focus:outline-none"
           />
         </div>
 
         <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
           <div className="flex items-center justify-between text-xs text-slate-500">
-            <span>{t(lang, "Collaborators", "协作者")}</span>
+            <span>{t(lang, "Collaborators")}</span>
             <span>
-              {t(lang, "Total", "份额合计")} {totalPercent}%
+              {t(lang, "Total")} {totalPercent}%
             </span>
           </div>
           <div className="mt-4 space-y-4">
@@ -190,7 +184,7 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
               <div key={collab.id} className="rounded-xl border border-slate-200 bg-white p-3">
                 <div className="flex items-center justify-between text-xs text-slate-500">
                   <span>
-                    {t(lang, "Collaborator", "成员")} #{index + 1}
+                    {t(lang, "Collaborator")} #{index + 1}
                   </span>
                   {collaborators.length > 1 && (
                     <button
@@ -198,7 +192,7 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
                       onClick={() => removeCollaborator(collab.id)}
                       className="text-pink-500 hover:text-pink-600"
                     >
-                      {t(lang, "Remove", "移除")}
+                      {t(lang, "Remove")}
                     </button>
                   )}
                 </div>
@@ -207,13 +201,13 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
                     required
                     value={collab.name}
                     onChange={(event) => updateCollaborator(collab.id, "name", event.target.value)}
-                    placeholder={t(lang, "Aura", "凌曦")}
+                    placeholder={t(lang, "Aura")}
                     className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-pink-400 focus:outline-none"
                   />
                   <input
                     value={collab.role}
                     onChange={(event) => updateCollaborator(collab.id, "role", event.target.value)}
-                    placeholder={t(lang, "Producer", "制作人")}
+                    placeholder={t(lang, "Producer")}
                     className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-pink-400 focus:outline-none"
                   />
                 </div>
@@ -228,7 +222,7 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
                   <input
                     value={collab.payout}
                     onChange={(event) => updateCollaborator(collab.id, "payout", event.target.value)}
-                    placeholder={t(lang, "Wallet or PayPal", "钱包或 PayPal")}
+                    placeholder={t(lang, "Wallet or PayPal")}
                     className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-pink-400 focus:outline-none"
                   />
                 </div>
@@ -251,7 +245,7 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
             onClick={addCollaborator}
             className="mt-4 w-full rounded-xl border border-dashed border-slate-300 px-3 py-2 text-sm font-semibold text-slate-600"
           >
-            {t(lang, "Add collaborator", "新增协作者")}
+            {t(lang, "Add collaborator")}
           </button>
         </div>
 
@@ -261,8 +255,8 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
           className="w-full rounded-full bg-gradient-to-r from-[#ff63d3] to-[#ffa07a] px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {status === "loading"
-            ? t(lang, "Writing to Polygon…", "正在写入 Polygon…")
-            : t(lang, "Create on-chain split", "创建链上分账")}
+            ? t(lang, "Writing to Polygon…")
+            : t(lang, "Create on-chain split")}
         </button>
       </form>
 
@@ -278,10 +272,10 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
         >
           <p className="font-semibold">
             {status === "success"
-              ? t(lang, "Success", "成功")
+              ? t(lang, "Success")
               : status === "error"
-              ? t(lang, "Error", "错误")
-              : t(lang, "In progress", "进行中")}
+              ? t(lang, "Error")
+              : t(lang, "In progress")}
           </p>
           {statusMessage && <p className="mt-1">{statusMessage}</p>}
         </div>
@@ -308,7 +302,7 @@ export function AlphaAssistForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setStatus("loading");
-    setStatusMessage(t(lang, "Submitting…", "提交中…"));
+    setStatusMessage(t(lang, "Submitting…"));
 
     try {
       const response = await fetch("/api/alpha-intake", {
@@ -320,7 +314,7 @@ export function AlphaAssistForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
       if (!response.ok) {
         if (response.status === 401) {
           setStatus("error");
-          setStatusMessage(t(lang, "Please log in before submitting.", "提交前请先登录账户。"));
+          setStatusMessage(t(lang, "Please log in before submitting."));
           return;
         }
         const text = await response.text();
@@ -329,14 +323,14 @@ export function AlphaAssistForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
 
       setStatus("success");
       setStatusMessage(
-        t(lang, "We saved your info. Check your inbox soon.", "已收到信息，稍后会邮件联系你。"),
+        t(lang, "We saved your info. Check your inbox soon."),
       );
       setForm({ name: "", email: "", role: "artist", revenue_range: "<10k", current_process: "" });
       onSuccess?.();
     } catch (error) {
       setStatus("error");
       setStatusMessage(
-        error instanceof Error ? error.message : t(lang, "Unexpected error", "出现未知错误"),
+        error instanceof Error ? error.message : t(lang, "Unexpected error"),
       );
     }
   };
@@ -344,18 +338,18 @@ export function AlphaAssistForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
   return (
     <div className="rounded-[32px] border border-slate-200 bg-white p-6 text-slate-900">
       <p className="text-xs uppercase tracking-[0.35em] text-sky-200">
-        {t(lang, "Step 2", "第二步")}
+        {t(lang, "Step 2")}
       </p>
       <h3 className="mt-1 text-2xl font-semibold">
-        {t(lang, "Alpha assist", "后台代签")}
+        {t(lang, "Alpha assist")}
       </h3>
       <p className="text-sm text-slate-200">
-        {t(lang, "For collaborators without wallets.", "给没有钱包的成员填写信息。")}
+        {t(lang, "For collaborators without wallets.")}
       </p>
       <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
         <div>
           <label className="text-xs uppercase tracking-[0.3em] text-slate-300">
-            {t(lang, "Name", "姓名")}
+            {t(lang, "Name")}
           </label>
           <input
             required
@@ -363,13 +357,13 @@ export function AlphaAssistForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
             type="text"
             value={form.name}
             onChange={(event) => handleChange("name", event.target.value)}
-            placeholder={t(lang, "Aura Li", "李清扬")}
+            placeholder={t(lang, "Aura Li")}
             className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-pink-400 focus:outline-none"
           />
         </div>
         <div>
           <label className="text-xs uppercase tracking-[0.3em] text-slate-300">
-            {t(lang, "Email", "邮箱")}
+            {t(lang, "Email")}
           </label>
           <input
             required
@@ -383,7 +377,7 @@ export function AlphaAssistForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
         </div>
         <div>
           <label className="text-xs uppercase tracking-[0.3em] text-slate-300">
-            {t(lang, "Role", "身份")}
+            {t(lang, "Role")}
           </label>
           <select
             name="role"
@@ -392,15 +386,15 @@ export function AlphaAssistForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
             onChange={(event) => handleChange("role", event.target.value)}
             className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-pink-400 focus:outline-none"
           >
-            <option value="artist">{t(lang, "Artist / Band", "音乐人 / 乐队")}</option>
-            <option value="producer">{t(lang, "Producer / Writer", "制作人 / 词曲")}</option>
-            <option value="manager">{t(lang, "Manager / Label", "经纪 / 厂牌")}</option>
-            <option value="ops">{t(lang, "Ops / Finance", "运营 / 财务")}</option>
+            <option value="artist">{t(lang, "Artist / Band")}</option>
+            <option value="producer">{t(lang, "Producer / Writer")}</option>
+            <option value="manager">{t(lang, "Manager / Label")}</option>
+            <option value="ops">{t(lang, "Ops / Finance")}</option>
           </select>
         </div>
         <div>
           <label className="text-xs uppercase tracking-[0.3em] text-slate-300">
-            {t(lang, "Annual indie revenue", "独立业务年收入")}
+            {t(lang, "Annual indie revenue")}
           </label>
           <select
             name="revenue_range"
@@ -409,21 +403,21 @@ export function AlphaAssistForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
             onChange={(event) => handleChange("revenue_range", event.target.value)}
             className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-pink-400 focus:outline-none"
           >
-            <option value="<10k">{t(lang, "Under $10k", "低于 $10k")}</option>
-            <option value="10-50k">{t(lang, "$10k - $50k", "$10k - $50k")}</option>
-            <option value=">50k">{t(lang, "Above $50k", "超过 $50k")}</option>
+            <option value="<10k">{t(lang, "Under $10k")}</option>
+            <option value="10-50k">{t(lang, "$10k - $50k")}</option>
+            <option value=">50k">{t(lang, "Above $50k")}</option>
           </select>
         </div>
         <div>
           <label className="text-xs uppercase tracking-[0.3em] text-slate-300">
-            {t(lang, "Current process", "当前流程")}
+            {t(lang, "Current process")}
           </label>
           <textarea
             name="current_process"
             value={form.current_process}
             onChange={(event) => handleChange("current_process", event.target.value)}
             rows={3}
-            placeholder={t(lang, "Sheets, manual payouts…", "表格管理，手动分账…")}
+            placeholder={t(lang, "Sheets, manual payouts…")}
             className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-pink-400 focus:outline-none"
           />
         </div>
@@ -433,8 +427,8 @@ export function AlphaAssistForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
           className="w-full rounded-full bg-gradient-to-r from-[#ff63d3] to-[#ffa07a] px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {status === "loading"
-            ? t(lang, "Submitting…", "提交中…")
-            : t(lang, "Save info", "保存信息")}
+            ? t(lang, "Submitting…")
+            : t(lang, "Save info")}
         </button>
       </form>
       {status !== "idle" && (
@@ -449,10 +443,10 @@ export function AlphaAssistForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
         >
           <p className="font-semibold">
             {status === "success"
-              ? t(lang, "Success", "成功")
+              ? t(lang, "Success")
               : status === "error"
-              ? t(lang, "Error", "错误")
-              : t(lang, "In progress", "进行中")}
+              ? t(lang, "Error")
+              : t(lang, "In progress")}
           </p>
           {statusMessage && <p className="mt-1">{statusMessage}</p>}
         </div>

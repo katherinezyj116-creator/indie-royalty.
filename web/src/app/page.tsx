@@ -6,22 +6,22 @@ const steps = [
   {
     id: "01",
     title: "Step 1 · Wallet split",
-    body: "登录后即可连接钱包、创建协作者树、锁定百分比。",
-    cta: "开始分账",
+    body: "Connect your wallet, draft the split tree, and lock percentages.",
+    cta: "Start split",
     href: "/dashboard#step-1",
   },
   {
     id: "02",
     title: "Step 2 · Alpha assist",
-    body: "为没有钱包的成员收集资料，我们后台代签并写入 Supabase。",
-    cta: "填写代签表单",
+    body: "Collect info for collaborators without wallets — we sign and save it for you.",
+    cta: "Fill assist form",
     href: "/dashboard#step-2",
   },
   {
     id: "03",
     title: "Step 3 · Review & Publish",
-    body: "在 Review 页面审阅份额树，准备上链或 Raidar 同步。",
-    cta: "打开 Review",
+    body: "Review the tree, prepare for on-chain minting or Raidar sync.",
+    cta: "Open review",
     href: "/dashboard#step-3",
   },
 ];
@@ -29,26 +29,26 @@ const steps = [
 const highlights = [
   {
     title: "Data layer first",
-    body: "所有协作、分账、代签表单都落在 Supabase。即便链上延后，也能发布数据驱动的 Version 1。",
-    tag: "数据基座",
+    body: "Every collaborator form lands in Supabase. Even if crypto is delayed, Version 1 ships with real data.",
+    tag: "Data layer",
   },
   {
     title: "Chain & Raidar ready",
-    body: "Step 3 预览里已经预留链上铸造与 Raidar 同步按钮，等你确认数据后即可解锁。",
-    tag: "扩展能力",
+    body: "On-chain mint and Raidar sync buttons are already staged in Step 3 — unlock them when you are ready.",
+    tag: "Expansion",
   },
 ];
 
 const stats = [
-  { label: "Projects", value: "3", detail: "示例草稿" },
-  { label: "Alpha assist", value: "2", detail: "代签条目" },
-  { label: "Supabase", value: "1", detail: "统一数据源" },
+  { label: "Projects", value: "3", detail: "Sample drafts" },
+  { label: "Alpha assist", value: "2", detail: "Delegation entries" },
+  { label: "Supabase", value: "1", detail: "Unified backend" },
 ];
 
 const fanPerks = [
-  { title: "限量权益卡", detail: "粉丝可抢先兑换的 VIP pass" },
-  { title: "Receipt NFT", detail: "链上凭证自动推送到粉丝钱包" },
-  { title: "Fan equity", detail: "Superfan 拥有真实分账快照" },
+  { title: "Limited passes", detail: "VIP drops fans can claim first" },
+  { title: "Receipt NFT", detail: "On-chain proof auto-sent to wallets" },
+  { title: "Fan equity", detail: "Superfans hold transparent split snapshots" },
 ];
 
 export default function LandingPage() {
@@ -58,23 +58,23 @@ export default function LandingPage() {
         <section className="rounded-[40px] border border-white/40 bg-gradient-to-br from-[#fff5fb] via-[#ffeef7] to-[#e9f4ff] p-12 shadow-2xl">
           <p className="text-xs uppercase tracking-[0.35em] text-emerald-200">Indie artist first</p>
           <h1 className="mt-4 text-4xl font-semibold leading-tight text-slate-900">
-            Use one dashboard to draft splits, collect off-chain info, and publish receipts.
+            One bright workspace for splits, collaborator forms, and fan receipts.
           </h1>
           <p className="mt-4 max-w-2xl text-lg text-slate-600">
-            登录后即可进入 Step 1–3 向导；主页只留给核心叙事。Raidar 同步与链上发布会在你完成数据层之后解锁。
+            Run the Step 1–3 flow to save on-chain splits, capture off-chain intel, and line up Raidar or NFT drops without leaving this page.
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
             <Link
               href="/login"
               className="rounded-full bg-white px-6 py-3 text-base font-semibold text-slate-900 shadow-lg transition hover:opacity-90"
             >
-              登录并开始工作
+              Log in and keep building
             </Link>
             <Link
               href="/signup"
               className="rounded-full border border-white/30 px-6 py-3 text-base font-semibold text-white/80 transition hover:border-white"
             >
-              创建账户
+              Create workspace
             </Link>
           </div>
         </section>
@@ -123,8 +123,8 @@ export default function LandingPage() {
           <div className="flex flex-col gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.35em] text-pink-500">Fan perks</p>
-              <h3 className="mt-2 text-2xl font-semibold">粉丝权益模块随时就绪</h3>
-              <p className="text-sm text-slate-700">我们会把独立粉丝所需的亮色视觉和权益卡直接挂在这里——限量 Pass、Receipt NFT、Fan equity snapshot 都有明确入口。</p>
+              <h3 className="mt-2 text-2xl font-semibold">Fan perks are staged</h3>
+              <p className="text-sm text-slate-700">Keep the fan view live even before mint day. Passes, receipts, and equity snapshots sit here waiting for a single publish toggle.</p>
             </div>
             <div className="grid gap-4 md:grid-cols-3">
               {fanPerks.map((perk) => (
@@ -139,22 +139,20 @@ export default function LandingPage() {
                 href="/dashboard#step-3"
                 className="rounded-full bg-gradient-to-r from-[#ff63d3] to-[#ffa07a] px-5 py-2 text-sm font-semibold text-white shadow"
               >
-                查看粉丝视图
+                View Step 3 review
               </Link>
               <Link
-                href="/"
+                href="/fans"
                 className="rounded-full border border-pink-200 px-5 py-2 text-sm font-semibold text-pink-600"
               >
-                了解权益设置
+                Explore fan toolkit
               </Link>
             </div>
           </div>
         </section>
 
         <section className="rounded-[32px] border border-white/60 bg-white p-8 text-sm text-slate-600">
-          <p>
-            所有数据都会写入 Supabase（projects / collaborators / alpha_intake / profiles）。即使将来链上或 Raidar 模块延后，上述数据层也能独立运行，确保最坏情况下仍可上线。
-          </p>
+          <p>All splits, collaborators, and assist forms are stored in Supabase. Even if on-chain or Raidar work slips, this data layer can go live by itself.</p>
         </section>
       </div>
     </div>

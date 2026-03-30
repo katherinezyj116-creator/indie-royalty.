@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabaseClient";
+import { getSupabaseClient } from "@/lib/supabaseClient";
 import { clearSessionCookie, fetchProfileBySession, getSessionCookieName } from "@/lib/session";
 
 async function resolveSession(request: NextRequest) {
@@ -42,6 +42,7 @@ export async function POST(request: NextRequest) {
       return unauthorizedResponse(token);
     }
 
+    const supabase = getSupabaseClient();
     const body: ProjectRequestBody = await request.json();
     const { projectName, overview, requester, language } = body ?? {};
     const collaborators: IncomingCollaborator[] = Array.isArray(body?.collaborators)
@@ -120,6 +121,7 @@ export async function GET(request: NextRequest) {
       return unauthorizedResponse(token);
     }
 
+    const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from("projects")
       .select(

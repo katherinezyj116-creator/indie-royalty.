@@ -1,10 +1,11 @@
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabaseClient";
+import { getSupabaseClient } from "@/lib/supabaseClient";
 import { attachSessionCookie, createSession } from "@/lib/session";
 
 export async function POST(request: Request) {
   try {
+    const supabase = getSupabaseClient();
     const { name, email, password } = await request.json();
 
     if (!name || !email || !password) {

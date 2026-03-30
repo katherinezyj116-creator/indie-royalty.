@@ -86,21 +86,21 @@ export default function DashboardPage() {
           : "bg-slate-100 text-slate-600"
       }`}
     >
-      {summaryLoading ? "检查中…" : done ? "已完成" : "待完成"}
+      {summaryLoading ? "Checking…" : done ? "Done" : "Pending"}
     </span>
   );
 
   if (loading) {
     return (
-      <PageShell title="Loading..." subtitle="正在验证你的会话">
-        <p className="text-sm text-slate-300">Checking your session…</p>
+      <PageShell title="Loading..." subtitle="Verifying your session">
+        <p className="text-sm text-slate-600">Checking your session…</p>
       </PageShell>
     );
   }
 
   if (!profile) {
     return (
-      <PageShell title="Please log in" subtitle="登录后继续管理 splits 和粉丝权益。">
+      <PageShell title="Please log in" subtitle="Sign in to keep managing splits and fan perks.">
         <p className="text-sm text-slate-300">Your session expired.</p>
         <Link
           href="/login"
@@ -115,7 +115,7 @@ export default function DashboardPage() {
   return (
     <PageShell
       title="Indie Royalty workspace"
-      subtitle="Step 1–3 在这里串联，随时保存草稿并准备上线。"
+      subtitle="Steps 1–3 live here so you can save drafts and prep launches in one place."
     >
       <div className="rounded-2xl border border-slate-200 bg-white p-5 text-sm text-slate-700">
         <p className="text-base text-slate-900">Welcome back, {profile?.name ?? "guest"}</p>
@@ -164,7 +164,7 @@ export default function DashboardPage() {
               <p className="text-xs uppercase tracking-[0.35em] text-pink-500">Step 3</p>
               <h3 className="mt-1 text-2xl font-semibold text-slate-900">Review & Publish</h3>
               <p className="text-sm text-slate-600">
-                审核 Supabase 数据、准备链上或 Raidar 同步。这里会列出你最近的草稿。
+                Review your Supabase data, prep on-chain or Raidar sync, and keep every recent draft in view.
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -173,7 +173,7 @@ export default function DashboardPage() {
                 href="/"
                 className="rounded-full border border-pink-200 px-4 py-2 text-xs font-semibold text-pink-600"
               >
-                返回 Landing
+                Back to landing
               </Link>
             </div>
           </div>

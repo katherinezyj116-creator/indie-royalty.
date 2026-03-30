@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabase } from "@/lib/supabaseClient";
+import { getSupabaseClient } from "@/lib/supabaseClient";
 import { clearSessionCookie, fetchProfileBySession, getSessionCookieName } from "@/lib/session";
 
 export async function GET(
@@ -19,6 +19,7 @@ export async function GET(
       return response;
     }
 
+    const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from("projects")
       .select(
