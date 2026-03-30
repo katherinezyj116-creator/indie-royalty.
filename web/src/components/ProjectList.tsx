@@ -72,34 +72,34 @@ export function ProjectList({ initialProjects }: { initialProjects?: ProjectSumm
       {projects.map((project) => (
         <div
           key={project.id}
-          className="rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-200"
+          className="rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-700"
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-base font-semibold text-white">{project.name}</p>
+              <p className="text-base font-semibold text-slate-900">{project.name}</p>
               {project.overview && (
-                <p className="text-xs text-slate-400">{project.overview}</p>
+                <p className="text-xs text-slate-500">{project.overview}</p>
               )}
             </div>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500">
               {new Date(project.created_at).toLocaleDateString()} · {project.total_percent ?? 0}%
             </p>
           </div>
           {project.collaborators && project.collaborators.length > 0 && (
-            <ul className="mt-3 space-y-1 text-xs text-slate-300">
+            <ul className="mt-3 space-y-1 text-xs text-slate-600">
               {project.collaborators.map((collab, index) => (
                 <li key={`${project.id}-${index}`} className="flex items-center justify-between">
                   <span>
                     {collab.name ?? "Unnamed"} · {collab.role ?? "Contributor"}
                   </span>
-                  <span className="text-slate-400">{collab.percent ?? 0}%</span>
+                  <span className="text-slate-500">{collab.percent ?? 0}%</span>
                 </li>
               ))}
             </ul>
           )}
           <Link
             href={`/dashboard/projects/${project.id}`}
-            className="mt-4 inline-flex rounded-full border border-white/30 px-4 py-2 text-xs font-semibold text-white"
+            className="mt-4 inline-flex rounded-full bg-gradient-to-r from-[#ff63d3] to-[#ffa07a] px-4 py-2 text-xs font-semibold text-white"
           >
             Open review
           </Link>

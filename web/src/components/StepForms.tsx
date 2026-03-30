@@ -115,9 +115,9 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
   };
 
   return (
-    <div className="rounded-[32px] border border-white/15 bg-white/5 p-6 text-white">
-      <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-white/80">
-        <p className="text-white/60">连接钱包后即可保存分账草稿。</p>
+    <div className="rounded-[32px] border border-slate-200 bg-white p-6 text-slate-900">
+      <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-slate-600">
+        <p className="text-slate-500">连接钱包后即可保存分账草稿。</p>
         <div className="text-right">
           <button
             type="button"
@@ -129,7 +129,7 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
                 : undefined
             }
             disabled={!primaryConnector || connectStatus === "pending"}
-            className="rounded-full border border-white/30 px-4 py-2 text-xs font-semibold text-white transition hover:border-white disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-full border border-pink-200 px-4 py-2 text-xs font-semibold text-pink-600 transition hover:border-pink-400 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isConnected
               ? `${shortAddress} · ${t(lang, "Disconnect", "断开")}`
@@ -141,7 +141,7 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
             <button
               type="button"
               onClick={() => connect({ connector: secondaryConnector })}
-              className="mt-2 block text-xs font-semibold text-white/60 underline"
+              className="mt-2 block text-xs font-semibold text-slate-500 underline"
             >
               {t(lang, "Use WalletConnect instead", "改用 WalletConnect")}
             </button>
@@ -162,7 +162,7 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
             value={projectName}
             onChange={(event) => setProjectName(event.target.value)}
             placeholder={t(lang, "Midnight Bloom", "午夜绽放")}
-            className="mt-2 w-full rounded-2xl border border-white/20 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/40 focus:border-white focus:outline-none"
+            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-pink-400 focus:outline-none"
           />
         </div>
         <div>
@@ -174,12 +174,12 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
             onChange={(event) => setOverview(event.target.value)}
             rows={3}
             placeholder={t(lang, "Streaming + merch pool", "流媒体 + 周边分润池")}
-            className="mt-2 w-full rounded-2xl border border-white/20 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/40 focus:border-white focus:outline-none"
+            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-pink-400 focus:outline-none"
           />
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-          <div className="flex items-center justify-between text-xs text-white/60">
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <div className="flex items-center justify-between text-xs text-slate-500">
             <span>{t(lang, "Collaborators", "协作者")}</span>
             <span>
               {t(lang, "Total", "份额合计")} {totalPercent}%
@@ -187,8 +187,8 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
           </div>
           <div className="mt-4 space-y-4">
             {collaborators.map((collab, index) => (
-              <div key={collab.id} className="rounded-xl border border-white/10 bg-slate-900/60 p-3">
-                <div className="flex items-center justify-between text-xs text-white/50">
+              <div key={collab.id} className="rounded-xl border border-slate-200 bg-white p-3">
+                <div className="flex items-center justify-between text-xs text-slate-500">
                   <span>
                     {t(lang, "Collaborator", "成员")} #{index + 1}
                   </span>
@@ -196,7 +196,7 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
                     <button
                       type="button"
                       onClick={() => removeCollaborator(collab.id)}
-                      className="text-white/60 hover:text-white"
+                      className="text-pink-500 hover:text-pink-600"
                     >
                       {t(lang, "Remove", "移除")}
                     </button>
@@ -208,13 +208,13 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
                     value={collab.name}
                     onChange={(event) => updateCollaborator(collab.id, "name", event.target.value)}
                     placeholder={t(lang, "Aura", "凌曦")}
-                    className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-white focus:outline-none"
+                    className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-pink-400 focus:outline-none"
                   />
                   <input
                     value={collab.role}
                     onChange={(event) => updateCollaborator(collab.id, "role", event.target.value)}
                     placeholder={t(lang, "Producer", "制作人")}
-                    className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-white focus:outline-none"
+                    className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-pink-400 focus:outline-none"
                   />
                 </div>
                 <div className="mt-2 grid gap-2 md:grid-cols-2">
@@ -223,13 +223,13 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
                     value={collab.email}
                     onChange={(event) => updateCollaborator(collab.id, "email", event.target.value)}
                     placeholder="team@label.com"
-                    className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-white focus:outline-none"
+                    className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-pink-400 focus:outline-none"
                   />
                   <input
                     value={collab.payout}
                     onChange={(event) => updateCollaborator(collab.id, "payout", event.target.value)}
                     placeholder={t(lang, "Wallet or PayPal", "钱包或 PayPal")}
-                    className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-white focus:outline-none"
+                    className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-pink-400 focus:outline-none"
                   />
                 </div>
                 <div className="mt-2">
@@ -240,7 +240,7 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
                     value={collab.percent}
                     onChange={(event) => updateCollaborator(collab.id, "percent", event.target.value)}
                     placeholder="20"
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/30 focus:border-white focus:outline-none"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-pink-400 focus:outline-none"
                   />
                 </div>
               </div>
@@ -249,7 +249,7 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
           <button
             type="button"
             onClick={addCollaborator}
-            className="mt-4 w-full rounded-xl border border-dashed border-white/30 px-3 py-2 text-sm font-semibold text-white/80"
+            className="mt-4 w-full rounded-xl border border-dashed border-slate-300 px-3 py-2 text-sm font-semibold text-slate-600"
           >
             {t(lang, "Add collaborator", "新增协作者")}
           </button>
@@ -258,7 +258,7 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
         <button
           type="submit"
           disabled={!isConnected || status === "loading"}
-          className="w-full rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full rounded-full bg-gradient-to-r from-[#ff63d3] to-[#ffa07a] px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {status === "loading"
             ? t(lang, "Writing to Polygon…", "正在写入 Polygon…")
@@ -270,10 +270,10 @@ export function WalletSplitForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
         <div
           className={`mt-4 rounded-2xl border p-4 text-sm ${
             status === "success"
-              ? "border-emerald-200/40 bg-emerald-400/10 text-emerald-100"
+              ? "border-emerald-200 bg-emerald-50 text-emerald-800"
               : status === "error"
-              ? "border-rose-200/40 bg-rose-400/10 text-rose-100"
-              : "border-white/20 bg-white/5 text-white"
+              ? "border-rose-200 bg-rose-50 text-rose-800"
+              : "border-slate-200 bg-slate-50 text-slate-700"
           }`}
         >
           <p className="font-semibold">
@@ -342,7 +342,7 @@ export function AlphaAssistForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
   };
 
   return (
-    <div className="rounded-[32px] border border-white/15 bg-white/5 p-6 text-white">
+    <div className="rounded-[32px] border border-slate-200 bg-white p-6 text-slate-900">
       <p className="text-xs uppercase tracking-[0.35em] text-sky-200">
         {t(lang, "Step 2", "第二步")}
       </p>
@@ -364,7 +364,7 @@ export function AlphaAssistForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
             value={form.name}
             onChange={(event) => handleChange("name", event.target.value)}
             placeholder={t(lang, "Aura Li", "李清扬")}
-            className="mt-2 w-full rounded-2xl border border-white/20 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/40 focus:border-white focus:outline-none"
+            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-pink-400 focus:outline-none"
           />
         </div>
         <div>
@@ -378,7 +378,7 @@ export function AlphaAssistForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
             value={form.email}
             onChange={(event) => handleChange("email", event.target.value)}
             placeholder="team@label.com"
-            className="mt-2 w-full rounded-2xl border border-white/20 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/40 focus:border-white focus:outline-none"
+            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-pink-400 focus:outline-none"
           />
         </div>
         <div>
@@ -390,7 +390,7 @@ export function AlphaAssistForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
             required
             value={form.role}
             onChange={(event) => handleChange("role", event.target.value)}
-            className="mt-2 w-full rounded-2xl border border-white/20 bg-white/5 px-4 py-3 text-sm text-white focus:border-white focus:outline-none"
+            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-pink-400 focus:outline-none"
           >
             <option value="artist">{t(lang, "Artist / Band", "音乐人 / 乐队")}</option>
             <option value="producer">{t(lang, "Producer / Writer", "制作人 / 词曲")}</option>
@@ -407,7 +407,7 @@ export function AlphaAssistForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
             required
             value={form.revenue_range}
             onChange={(event) => handleChange("revenue_range", event.target.value)}
-            className="mt-2 w-full rounded-2xl border border-white/20 bg-white/5 px-4 py-3 text-sm text-white focus:border-white focus:outline-none"
+            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-pink-400 focus:outline-none"
           >
             <option value="<10k">{t(lang, "Under $10k", "低于 $10k")}</option>
             <option value="10-50k">{t(lang, "$10k - $50k", "$10k - $50k")}</option>
@@ -424,13 +424,13 @@ export function AlphaAssistForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
             onChange={(event) => handleChange("current_process", event.target.value)}
             rows={3}
             placeholder={t(lang, "Sheets, manual payouts…", "表格管理，手动分账…")}
-            className="mt-2 w-full rounded-2xl border border-white/20 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/40 focus:border-white focus:outline-none"
+            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-pink-400 focus:outline-none"
           />
         </div>
         <button
           type="submit"
           disabled={status === "loading"}
-          className="w-full rounded-full bg-white px-6 py-3 text-sm font-semibold text-slate-900 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full rounded-full bg-gradient-to-r from-[#ff63d3] to-[#ffa07a] px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {status === "loading"
             ? t(lang, "Submitting…", "提交中…")
@@ -441,10 +441,10 @@ export function AlphaAssistForm({ lang = "en", onSuccess }: { lang?: "en" | "zh"
         <div
           className={`mt-4 rounded-2xl border p-4 text-sm ${
             status === "success"
-              ? "border-emerald-200/40 bg-emerald-400/10 text-emerald-100"
+              ? "border-emerald-200 bg-emerald-50 text-emerald-800"
               : status === "error"
-              ? "border-rose-200/40 bg-rose-400/10 text-rose-100"
-              : "border-white/20 bg-white/5 text-white"
+              ? "border-rose-200 bg-rose-50 text-rose-800"
+              : "border-slate-200 bg-slate-50 text-slate-700"
           }`}
         >
           <p className="font-semibold">
