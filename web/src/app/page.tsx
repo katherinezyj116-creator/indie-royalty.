@@ -26,6 +26,25 @@ const steps = [
   },
 ];
 
+const highlights = [
+  {
+    title: "Data layer first",
+    body: "所有协作、分账、代签表单都落在 Supabase。即便链上延后，也能发布数据驱动的 Version 1。",
+    tag: "数据基座",
+  },
+  {
+    title: "Chain & Raidar ready",
+    body: "Step 3 预览里已经预留链上铸造与 Raidar 同步按钮，等你确认数据后即可解锁。",
+    tag: "扩展能力",
+  },
+];
+
+const stats = [
+  { label: "Projects", value: "3", detail: "示例草稿" },
+  { label: "Alpha assist", value: "2", detail: "代签条目" },
+  { label: "Supabase", value: "1", detail: "统一数据源" },
+];
+
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
@@ -68,6 +87,30 @@ export default function LandingPage() {
               </Link>
             </div>
           ))}
+        </section>
+
+        <section className="grid gap-6 rounded-[32px] border border-white/10 bg-white/5 p-8 shadow-2xl backdrop-blur lg:grid-cols-2">
+          {highlights.map((item) => (
+            <div key={item.title} className="flex flex-col gap-3 rounded-3xl border border-white/10 bg-slate-950/40 p-6">
+              <span className="inline-flex w-fit rounded-full border border-white/20 px-3 py-1 text-xs uppercase tracking-[0.3em] text-white/70">
+                {item.tag}
+              </span>
+              <h3 className="text-2xl font-semibold text-white">{item.title}</h3>
+              <p className="text-sm text-slate-200">{item.body}</p>
+            </div>
+          ))}
+        </section>
+
+        <section className="rounded-[32px] border border-white/10 bg-white/5 p-8">
+          <div className="grid gap-6 text-center text-white/80 md:grid-cols-3">
+            {stats.map((stat) => (
+              <div key={stat.label} className="rounded-2xl border border-white/10 bg-white/5 p-6">
+                <p className="text-xs uppercase tracking-[0.35em] text-white/50">{stat.label}</p>
+                <p className="mt-2 text-4xl font-semibold text-white">{stat.value}</p>
+                <p className="text-sm text-white/70">{stat.detail}</p>
+              </div>
+            ))}
+          </div>
         </section>
 
         <section className="rounded-[32px] border border-white/10 bg-white/5 p-8 text-sm text-slate-200">

@@ -136,7 +136,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="space-y-10">
-        <section id="step-1" className="space-y-4">
+        <section id="step-1" className="space-y-4 rounded-[32px] border border-white/10 bg-white/5 p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs uppercase tracking-[0.35em] text-white/60">Step 1</p>
@@ -147,7 +147,7 @@ export default function DashboardPage() {
           <WalletSplitForm onSuccess={() => loadSummary()} />
         </section>
 
-        <section id="step-2" className="space-y-4">
+        <section id="step-2" className="space-y-4 rounded-[32px] border border-white/10 bg-white/5 p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs uppercase tracking-[0.35em] text-white/60">Step 2</p>
